@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MilkUp NICU 1 – Message Generator</title>
+<style>
+:root{--bg:#f7f9fc;--card:#fff;--text:#333;--label:#555;--input-bg:#fafafa;--border:#ced4da;--primary:#d63384;--primary-hover:#b02a6b;--soft:#fff4f8;--ok:#198754;--warn-bg:#fff3cd;--warn-text:#664d03;--danger-bg:#f8d7da;--danger-text:#842029;}
+[data-theme="dark"]{--bg:#121212;--card:#1e1e1e;--text:#e0e0e0;--label:#b0b0b0;--input-bg:#2a2a2a;--border:#444;--primary:#e64980;--primary-hover:#c2255c;--soft:#2a1f24;--warn-bg:#3d3200;--warn-text:#ffe08a;--danger-bg:#4a1c20;--danger-text:#ffb3b8;}
+*{box-sizing:border-box}
+body{font-family:'Sarabun','Segoe UI',Tahoma,sans-serif;background:var(--bg);color:var(--text);margin:0;padding:12px;transition:background .3s,color .3s}
+.container{max-width:640px;margin:0 auto}
+.header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:12px}
+h1{color:var(--primary);font-size:19px;margin:0}
+.subtitle{color:var(--label);font-size:12px;margin-top:4px;line-height:1.5}
+.card{background:var(--card);border-radius:12px;padding:16px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.card h3{margin:0 0 4px;font-size:15px;color:var(--primary)}
+label{display:block;font-weight:600;font-size:13px;color:var(--label);margin:12px 0 4px}
+input,textarea,select{width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:var(--input-bg);color:var(--text);font-family:inherit}
+textarea{resize:vertical;min-height:70px}
+.row{display:flex;gap:8px}.row>div{flex:1}
+.hint{font-size:11px;color:var(--label);margin-top:4px;line-height:1.4}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.tag{background:var(--input-bg);border:1px solid var(--primary);color:var(--primary);padding:5px 10px;border-radius:15px;font-size:12px;cursor:pointer;font-family:inherit}
+.tag:active{background:var(--primary);color:#fff}
+.btn{width:100%;border:none;border-radius:10px;padding:12px;font-size:15px;font-weight:700;color:#fff;cursor:pointer;margin-top:8px;background:var(--primary);font-family:inherit}
+.btn:hover{background:var(--primary-hover)}
+.btn.outline{background:transparent;color:var(--primary);border:2px solid var(--primary)}
+.btn.green{background:var(--ok)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.small-btn{background:none;border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:20px;font-size:12px;cursor:pointer;white-space:nowrap;font-family:inherit}
+.banner{border-radius:8px;padding:10px 12px;font-size:13px;margin-top:10px;display:none;line-height:1.5}
+.banner.warn{background:var(--warn-bg);color:var(--warn-text)}
+.banner.danger{background:var(--danger-bg);color:var(--danger-text)}
+.preview{background:var(--soft);border:1px dashed var(--primary)}
+#outputBox{min-height:300px;line-height:1.6;font-size:14px;background:var(--card)}
+.review{display:flex;gap:8px;align-items:flex-start;font-weight:400}
+.review input{width:auto;margin-top:3px}
+.meta{font-size:11px;color:var(--label);margin-top:4px;text-align:right}
+.footer-note{font-size:11px;color:var(--label);text-align:center;margin:10px 0 24px;line-height:1.6}
+</style>
+</head>
+<body data-theme="light">
+<div class="container">
+
+  <div class="header">
+    <div>
+      <h1>🧸 MilkUp NICU 1</h1>
+      <div class="subtitle">ผู้ช่วยร่างข้อความอัปเดตลูกและส่งเสริมนมแม่ทาง LINE<br>อิงข้อมูลบทเรียนนมแม่ • พยาบาลตรวจสอบก่อนส่งทุกครั้ง</div>
+    </div>
+    <button class="small-btn" id="themeBtn" onclick="toggleTheme()">🌙 โหมดมืด</button>
+  </div>
+
+  <!-- 1. ข้อมูลทารก -->
+  <div class="card">
+    <h3>👶 ข้อมูลทารก</h3>
+    <label>ชื่อเล่นของทารก</label>
+    <input id="babyName" placeholder="เช่น น้องนำโชค" oninput="save()">
+    <div class="hint">🔒 ใช้ชื่อเล่นเท่านั้น ห้ามใส่ชื่อ-นามสกุล, HN หรือวันเดือนปีเกิด</div>
+
+    <label>สถานการณ์ของน้องวันนี้</label>
+    <textarea id="babyStatus" placeholder="เช่น หายใจเองได้ดีขึ้น นอนหลับดี" oninput="save()"></textarea>
+    <div class="tags">
+      <button type="button" class="tag" onclick="addTag('หายใจเองได้ดีขึ้น')">หายใจเองดีขึ้น</button>
+      <button type="button" class="tag" onclick="addTag('นอนหลับดี อารมณ์ดี')">หลับดี อารมณ์ดี</button>
+      <button type="button" class="tag" onclick="addTag('ขับถ่ายปกติดี')">ขับถ่ายปกติ</button>
+      <button type="button" class="tag" onclick="addTag('รับนมได้ดี')">รับนมได้ดี</button>
+      <button type="button" class="tag" onclick="addTag('สัญญาณชีพคงที่')">สัญญาณชีพคงที่</button>
+      <button type="button" class="tag" onclick="addTag('ได้ทำ Kangaroo care กับแม่')">Kangaroo care</button>
+    </div>
+
+    <label>น้ำหนัก</label>
+    <input id="weight" placeholder="เช่น 1,850 กรัม" oninput="save()">
+  </div>
+
+  <!-- 2. ข้อมูลน้ำนม -->
+  <div class="card">
+    <h3>🍼 ข้อมูลน้ำนม</h3>
+    <div class="row">
+      <div><label>ปริมาณนมต่อมื้อ</label><input id="perFeed" placeholder="เช่น 25 ml x 8 มื้อ" oninput="save()"></div>
+      <div><label>นมแม่คงเหลือที่ NICU</label><input id="stock" placeholder="เช่น 5 ถุง (12 ออนซ์)" oninput="save()"></div>
+    </div>
+    <div class="hint">ระบบใส่ตัวเลขตามที่พยาบาลกรอกทุกตัวอักษร ไม่ปรับแก้ข้อมูลทางคลินิก</div>
+  </div>
+
+  <!-- 3. ข้อมูลคุณแม่ -->
+  <div class="card">
+    <h3>🤱 ข้อมูลคุณแม่</h3>
+    <label>ระยะหลังคลอด</label>
+    <select id="phase" onchange="save()">
+      <option value="">— ไม่ระบุ —</option>
+      <option value="d0_1">วันที่ 0–1 หลังคลอด</option>
+      <option value="d2_4">วันที่ 2–4 หลังคลอด</option>
+      <option value="d5_14">วันที่ 5–14 หลังคลอด</option>
+      <option value="w2">มากกว่า 2 สัปดาห์</option>
+    </select>
+
+    <label>สถานการณ์ / ความต้องการของคุณแม่</label>
+    <select id="situation" onchange="toggleCustom(); save()">
+      <option value="day1">วันแรกหลังคลอด</option>
+      <option value="low_milk">น้ำนมน้อย</option>
+      <option value="engorgement">คัดตึงเต้านม</option>
+      <option value="steady">น้ำนมมาดี</option>
+      <option value="tired">เหนื่อยล้า / เครียด</option>
+      <option value="nutrition">🥗 โภชนาการและอาหารเพื่อน้ำนม</option>
+      <option value="learn">ต้องการเรียนรู้เพิ่ม</option>
+      <option value="custom">— พิมพ์ระบุเอง —</option>
+    </select>
+    <input id="customSituation" style="display:none;margin-top:8px" placeholder="เช่น แม่กังวลเรื่องแผลผ่าตัดยังเจ็บ" oninput="save()">
+    <div class="hint">ใช้คัดเลือกความรู้เบื้องหลังเท่านั้น หัวข้อนี้จะไม่แสดงในข้อความ</div>
+  </div>
+
+  <!-- 4. การสื่อสาร -->
+  <div class="card">
+    <h3>💬 รูปแบบการสื่อสาร</h3>
+    <label>บุคลิกข้อความ</label>
+    <select id="persona" onchange="save()">
+      <option value="fighter">👶 นักสู้ตัวจิ๋ว</option>
+      <option value="cute">🧸 หนูน้อยอ้อนสุดคิ้ว</option>
+      <option value="team">🤝 เราสู้ไปด้วยกัน</option>
+      <option value="rest">🌙 ชวนแม่พักผ่อน</option>
+      <option value="dad">👨‍👩‍👦 Buddy คนสำคัญ (คุณพ่อ)</option>
+    </select>
+
+    <label>รูปแบบการเล่าเรื่อง</label>
+    <select id="style" onchange="save()">
+      <option value="letter">💌 ลูกเขียนจดหมาย</option>
+      <option value="diary">📔 บันทึกประจำวันของลูก</option>
+      <option value="team">🏥 ทีม NICU สื่อสาร</option>
+      <option value="short">⚡ ข้อความสั้นกระชับ</option>
+      <option value="encourage">🌷 ให้กำลังใจตามสถานการณ์</option>
+    </select>
+
+    <label>คำลงท้าย</label>
+    <select id="particle" onchange="save()">
+      <option value="ค่ะ">ค่ะ</option>
+      <option value="ครับ">ครับ</option>
+    </select>
+  </div>
+
+  <!-- 5. บันทึกพยาบาล -->
+  <div class="card">
+    <h3>📝 บันทึกเพิ่มเติมจากพยาบาล</h3>
+    <textarea id="nurseNote" placeholder="(ไม่บังคับ) เช่น วันนี้คุณแม่ปั๊มนมมาส่งตรงเวลาดีมากค่ะ" oninput="save()"></textarea>
+    <button class="small-btn" style="margin-top:8px" onclick="clearPatient()">🧹 ล้างข้อมูลเคสนี้</button>
+  </div>
+
+  <!-- ปุ่มหลัก 3 ปุ่ม -->
+  <div class="card">
+    <button class="btn" onclick="generate('new')">🪄 สร้างข้อความใหม่</button>
+    <button class="btn outline" onclick="generate('style')">🎨 สร้างอีกสไตล์</button>
+    <button class="btn outline" onclick="generate('today')">🌟 ข้อความที่เหมาะกับวันนี้</button>
+    <div id="privacyBanner" class="banner danger"></div>
+    <div id="dangerBanner" class="banner danger"></div>
+    <div id="kbBanner" class="banner warn"></div>
+  </div>
+
+  <!-- Preview + Nurse Review -->
+  <div class="card preview" id="previewCard" style="display:none">
+    <h3>👀 ตัวอย่างข้อความ (แก้ไขได้)</h3>
+    <div class="hint" id="styleInfo"></div>
+    <textarea id="outputBox" oninput="updateCount()"></textarea>
+    <div class="meta" id="charCount"></div>
+    <label class="review"><input type="checkbox" id="reviewed" onchange="updateCopy()"> ✅ ฉันตรวจสอบความถูกต้องของข้อมูลทางคลินิกและเนื้อหาแล้ว</label>
+    <button class="btn green" id="copyBtn" onclick="copyText()" disabled>📋 คัดลอกไปส่ง LINE</button>
+  </div>
+
+  <div class="footer-note">
+    เวอร์ชันอิงบทเรียนนมแม่: ไม่ส่งข้อความอัตโนมัติ • ไม่วินิจฉัย ไม่แนะนำยา<br>
+    ความรู้มาจากคลังบทเรียนนมแม่ที่รับรอง • ข้อมูลบันทึกเฉพาะในเครื่องนี้
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   CLINICAL KNOWLEDGE LAYER (อิงจากบทเรียนนมแม่)
+   ========================================================= */
+const KNOWLEDGE = {
+  day1: { label: "วันแรกหลังคลอด", items: [
+    { k: "หัวน้ำนม (Colostrum) แม้ได้ทีละไม่กี่หยด ก็อุดมด้วยภูมิคุ้มกันที่มีค่ามากสำหรับลูกใน NICU",
+      a: "เริ่มบีบกระตุ้นให้เร็วที่สุดเท่าที่ร่างกายไหว และเก็บทุกหยดส่งมาให้ทีมได้เลย{p}" },
+    { k: "ช่วงแรกน้ำนมมาน้อยเป็นเรื่องปกติ กระเพาะของลูกยังเล็กมาก หัวน้ำนมไม่กี่หยดจึงมีความหมายมาก",
+      a: "บีบด้วยมือเบาๆ เก็บใส่ไซริงค์ที่ทีมเตรียมให้ ไม่ต้องกังวลเรื่องปริมาณ{pn}" }
+  ]},
+  low_milk: { label: "น้ำนมน้อย", items: [
+    { k: "ปริมาณน้ำนมสัมพันธ์กับความถี่ในการระบาย การปั๊มหรือบีบ 8–10 ครั้งต่อ 24 ชั่วโมงช่วยกระตุ้นการสร้างน้ำนม",
+      a: "ลองนวดและบีบเต้าด้วยมือร่วมกับการปั๊ม (Hands-on pumping) จะช่วยระบายน้ำนมได้ดีขึ้น{p}" },
+    { k: "น้ำนมของแม่แต่ละคนมาเร็วช้าไม่เท่ากัน การพักผ่อนและจัดการความเครียดเป็นสิ่งสำคัญต่อการหลั่งน้ำนม",
+      a: "อย่าเปรียบเทียบกับใคร ค่อยๆ ทำตามรอบของตัวเองอย่างสม่ำเสมอ{p}" }
+  ]},
+  engorgement: { label: "คัดตึงเต้านม", items: [
+    { k: "เมื่อเต้านมคัดตึง การระบายน้ำนมออกอย่างสม่ำเสมอเป็นวิธีสำคัญที่ช่วยลดความตึง",
+      a: "ไม่ควรเว้นรอบปั๊มนาน และหลังระบายสามารถประคบเย็นเพื่อลดอาการบวมได้{p}",
+      alert: "⚠️ หากมีไข้ หนาวสั่น หรือเต้านมแดง ร้อน เจ็บมาก แจ้งพยาบาลหรือแพทย์ทันที{p}" }
+  ]},
+  steady: { label: "น้ำนมมาดี", items: [
+    { k: "เมื่อน้ำนมมาดีแล้ว การคงรอบปั๊มให้สม่ำเสมอ ช่วยรักษาระดับการผลิตน้ำนมในระยะยาว",
+      a: "รักษาจังหวะเดิมไว้ พักผ่อนและดื่มน้ำให้เพียงพอ{p}" }
+  ]},
+  tired: { label: "เหนื่อยล้า / เครียด", items: [
+    { k: "ความเหนื่อยล้าหลังคลอดเป็นเรื่องปกติ การพักผ่อนให้เพียงพอมีผลโดยตรงต่อกระบวนการสร้างและหลั่งน้ำนม",
+      a: "ระหว่างรอบปั๊มขอให้คนในครอบครัวช่วยดูแล และหาเวลางีบหลับพักผ่อนนะ{pn}" }
+  ]},
+  nutrition: { label: "โภชนาการและอาหารเพื่อน้ำนม", items: [
+    { k: "มารดาในระยะให้นมควรรับประทานอาหารให้ครบ 5 หมู่ในปริมาณที่เพียงพอ เพื่อให้ได้น้ำนมที่มีสารอาหารครบถ้วน",
+      a: "เน้นอาหารที่มีประโยชน์ เช่น โปรตีน ผักผลไม้สด และจิบน้ำอุ่นบ่อยๆ ระหว่างวันนะ{pn}" },
+    { k: "การดื่มน้ำและของเหลวในปริมาณที่เหมาะสม รวมถึงการเลือกทานอาหารบำรุงตามภูมิปัญญาไทย เช่น หัวปลี ขิง หรือใบกะเพรา ช่วยเสริมสร้างร่างกายได้ดี",
+      a: "ทานอาหารปรุงสุกใหม่และมีประโยชน์ พักผ่อนให้เต็มที่เพื่อเป็นทุนสร้างน้ำนมที่ดี{p}" }
+  ]},
+  learn: { label: "ต้องการเรียนรู้เพิ่ม", items: [
+    { k: "การใช้หัวน้ำนมแม่ดูแลช่องปากลูก (Oral colostrum care) ช่วยให้ลูกได้รับภูมิคุ้มกันตั้งแต่เนิ่นๆ",
+      a: "ถ้าสนใจ สามารถสอบถามวิธีจากพี่พยาบาลได้เลยนะ{pn}" }
+  ]}
+};
+
+const CUSTOM_KEYWORDS = {
+  engorgement: ["คัด","ตึง","ท่อน้ำนม","อุดตัน","เจ็บเต้า","ก้อน","แผล"],
+  low_milk:    ["น้อย","ไม่พอ","ไม่ค่อยมี","ไม่ไหล","ปั๊มไม่ออก"],
+  tired:       ["เหนื่อย","เครียด","ท้อ","นอนไม่พอ","กังวล","เศร้า"],
+  nutrition:   ["อาหาร","กิน","ทาน","โภชนาการ","น้ำ","ผัก","เนื้อ","ผลไม้"],
+  day1:        ["คลอด","วันแรก","หัวน้ำนม","colostrum"],
+  steady:      ["มาดี","เยอะ","สม่ำเสมอ","เก็บนม"],
+  learn:       ["อยากรู้","เรียนรู้","ความรู้","kangaroo"]
+};
+
+const PHASE_NOTE = {
+  d0_1:  "ช่วง 1–2 วันแรก น้ำนมยังมาน้อยเป็นเรื่องปกติ{p}",
+  d2_4:  "ช่วงวันที่ 2–4 น้ำนมมักเริ่มมามากขึ้น บางคนอาจรู้สึกเต้าตึง{p}",
+  d5_14: "ช่วงนี้เป็นช่วงสร้างปริมาณน้ำนม ความสม่ำเสมอสำคัญที่สุด{p}",
+  w2:    "ร่างกายเริ่มปรับตัวแล้ว การรักษาจังหวะเดิมช่วยได้มาก{p}"
+};
+
+const ENCOURAGE = {
+  day1:        "การเริ่มต้นขณะที่ลูกต้องอยู่ NICU ไม่ง่ายเลย แค่แม่เริ่มบีบน้ำนมก็เก่งมากแล้ว{p} 🌱",
+  low_milk:    "น้ำนมยังมาน้อยไม่ได้แปลว่าแม่ทำไม่ได้{pn} ร่างกายแต่ละคนใช้เวลาไม่เท่ากัน 🌷",
+  engorgement: "เต้าคัดตึงทำให้ไม่สบายตัวมาก ทีมเข้าใจและพร้อมช่วยเสมอ{p} 🤍",
+  steady:      "น้ำนมมาดีแบบนี้ เป็นผลจากความตั้งใจของแม่ล้วนๆ เลย{p} 🎉",
+  tired:       "เหนื่อยได้ พักได้{pn} แม่ไม่จำเป็นต้องเข้มแข็งตลอดเวลา 🌙",
+  nutrition:   "โภชนาการที่ดีและการพักผ่อนคือหัวใจสำคัญ แม่เก่งมากที่ดูแลตัวเองเพื่อลูก{p} 🥗",
+  learn:       "ดีใจมากที่แม่อยากเรียนรู้เพิ่ม วันนี้ทีมมีเรื่องน่ารู้มาฝาก{p} 📚",
+  none:        "ทีม NICU 1 อยู่ข้างแม่ในทุกสถานการณ์{p} 🤍"
+};
+
+const PERSONAS = {
+  fighter: { name: "นักสู้ตัวจิ๋ว", emoji: "👶",
+    childOpen: ["นักสู้ตัวจิ๋ว {name} รายงานตัว{p}! วันนี้หนูสู้เต็มที่เลย 💪", "วันนี้หนูฮึบสู้อีกวันแล้ว{pn} ⚡"],
+    teamOpen:  ["{name} นักสู้ตัวจิ๋วของเราวันนี้สู้เก่งมาก{p} 💪"],
+    cheer:     ["น้องสู้ แม่ก็สู้ เราไปด้วยกันทีละก้าว{p} 💪", "ทุกวันที่ผ่านไปคือชัยชนะเล็กๆ ของครอบครัวเรา{p} 🏆"] },
+  cute: { name: "หนูน้อยอ้อนสุดคิ้ว", emoji: "🧸",
+    childOpen: ["คิดถึงแม่จังเลย{p} 🥺💕 {name} มาอ้อนแล้ว", "แม่จ๋า~ {name} เอง{p} วันนี้หนูเป็นเด็กดีมากเลย 🧸"],
+    teamOpen:  ["{name} ตัวน้อยวันนี้น่ารักน่าเอ็นดูมาก{p} 🧸"],
+    cheer:     ["ทุกหยดที่แม่ส่งมา หนูได้รับความรักเต็มๆ เลย{p} 💕", "ขอบคุณแม่คนเก่งของหนู ส่งกอดไปให้แน่นๆ เลย{p} 🤗"] },
+  team: { name: "เราสู้ไปด้วยกัน", emoji: "🤝",
+    childOpen: ["แม่จ๋า เราเป็นทีมเดียวกัน{pn} 🤝"],
+    teamOpen:  ["ทีม NICU 1 ขออัปเดตเรื่องราวของ{name}ให้ทราบ{p} 🤝"],
+    cheer:     ["แม่ไม่ได้สู้คนเดียว{pn} ทั้งน้องและทีม NICU อยู่ข้างๆ เสมอ 🤍", "เราเป็นทีมเดียวกัน ค่อยๆ ไปด้วยกัน{p} 🤝"] },
+  rest: { name: "ชวนแม่พักผ่อน", emoji: "🌙",
+    childOpen: ["หนูอยู่กับพี่ๆ พยาบาลสบายดี แม่ได้พักบ้างแล้วหรือยัง 🌙"],
+    teamOpen:  ["ทีม NICU 1 ส่งความห่วงใยมาถึงคุณแม่{p} 🌙"],
+    cheer:     ["วันนี้อย่าลืมพักผ่อน ดื่มน้ำ และงีบสักนิด{pn} ☁️", "แม่ที่ได้พักคือแม่ที่มีพลังที่สุด ดูแลตัวเองด้วย{pn} 🌙"] },
+  dad: { name: "Buddy คนสำคัญ (คุณพ่อ)", emoji: "👨‍👩‍👦",
+    childOpen: ["ป๊า Buddy คนสำคัญกับแม่คนเก่ง หนูมีเรื่องมาเล่า{p} 💙"],
+    teamOpen:  ["{name} มีเรื่องดีๆ มาเล่าให้คุณพ่อคุณแม่ฟัง{p} 💙"],
+    cheer:     ["คุณพ่อช่วยดูแลแม่ เตรียมอาหารที่มีประโยชน์ และช่วยส่งนมมาที่ตึก คือส่วนสำคัญของทีมเลย{p} 💙", "กำลังใจจากคุณพ่อช่วยให้แม่ผ่อนคลาย และน้ำนมก็ไหลดีขึ้นด้วย{p} 🤝"] }
+};
+
+const STYLE_NAMES = { letter:"ลูกเขียนจดหมาย", diary:"บันทึกประจำวันของลูก", team:"ทีม NICU สื่อสาร", short:"ข้อความสั้นกระชับ", encourage:"ให้กำลังใจตามสถานการณ์" };
+const STYLE_ORDER = ["letter","diary","team","short","encourage"];
+const PERSONA_ORDER = ["fighter","cute","team","rest","dad"];
+
+const TODAY_PICK = {
+  day1:        { persona:"team",    style:"team" },
+  low_milk:    { persona:"team",    style:"encourage" },
+  engorgement: { persona:"team",    style:"team" },
+  steady:      { persona:"fighter", style:"diary" },
+  tired:       { persona:"rest",    style:"letter" },
+  nutrition:   { persona:"rest",    style:"encourage" },
+  learn:       { persona:"cute",    style:"team" },
+  none:        { persona:"team",    style:"team" }
+};
+
+const DANGER_WORDS = ["ไข้","หนาวสั่น","แดงร้อน","หนอง","ฝี","เลือดออก","ชัก","หายใจลำบาก","อยากตาย","ทำร้ายตัวเอง","ไม่อยากอยู่","ซึมเศร้า"];
+const PARTICLES = { "ค่ะ": { p:"ค่ะ", pn:"นะคะ" }, "ครับ": { p:"ครับ", pn:"นะครับ" } };
+
+const FIELDS = ["babyName","babyStatus","weight","perFeed","stock","phase","situation","customSituation","persona","style","particle","nurseNote"];
+const CASE_FIELDS = ["babyName","babyStatus","weight","perFeed","stock","customSituation","nurseNote"];
+const PREFIX = "milkup_v2_";
+
+const $ = id => document.getElementById(id);
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+
+function save(){ FIELDS.forEach(f => localStorage.setItem(PREFIX + f, $(f).value)); }
+
+function load(){
+  FIELDS.forEach(f => { const v = localStorage.getItem(PREFIX + f); if (v !== null) $(f).value = v; });
+  toggleCustom();
+  setTheme(localStorage.getItem(PREFIX + "theme") || "light");
+}
+
+function toggleCustom(){ $("customSituation").style.display = $("situation").value === "custom" ? "block" : "none"; }
+
+function addTag(text){
+  const box = $("babyStatus");
+  box.value = box.value.trim() ? box.value.trim() + " " + text : text;
+  save();
+}
+
+function toggleTheme(){
+  const t = document.body.getAttribute("data-theme") === "light" ? "dark" : "light";
+  setTheme(t); localStorage.setItem(PREFIX + "theme", t);
+}
+function setTheme(t){
+  document.body.setAttribute("data-theme", t);
+  $("themeBtn").textContent = t === "dark" ? "☀️ โหมดสว่าง" : "🌙 โหมดมืด";
+}
+
+function clearPatient(){
+  if (!confirm("ล้างข้อมูลของเคสนี้ทั้งหมดใช่ไหม?")) return;
+  CASE_FIELDS.forEach(f => $(f).value = "");
+  save();
+  $("previewCard").style.display = "none";
+  hideBanners();
+}
+
+function showBanner(id, html){ $(id).innerHTML = html; $(id).style.display = "block"; }
+function hideBanners(){ ["privacyBanner","dangerBanner","kbBanner"].forEach(id => $(id).style.display = "none"); }
+
+function checkPrivacy(){
+  const issues = [];
+  const all = CASE_FIELDS.map(f => $(f).value).join(" ");
+  if (/\bHN\b|เลขประจำตัว|เลขบัตร/i.test(all)) issues.push("พบคำที่เกี่ยวกับ HN / เลขประจำตัว");
+  if (/\d{6,}/.test(all)) issues.push("พบตัวเลขยาว 6 หลักขึ้นไป (อาจเป็น HN หรือเลขประจำตัว)");
+  if (/\d{1,2}\s*[\/\-.]\s*\d{1,2}\s*[\/\-.]\s*\d{2,4}/.test(all)) issues.push("พบรูปแบบวันที่ (อาจเป็นวันเดือนปีเกิด)");
+  if (/นามสกุล|ด\.ช\.|ด\.ญ\.|เด็กชาย|เด็กหญิง/.test(all)) issues.push("พบคำที่บ่งชี้ชื่อ-นามสกุลจริง");
+  const nick = $("babyName").value.trim().replace(/^น้อง\s*/, "");
+  if (/\s/.test(nick)) issues.push("ชื่อทารกมีช่องว่าง อาจเป็นชื่อ-นามสกุล กรุณาใช้ชื่อเล่นอย่างเดียว");
+  return issues;
+}
+
+function checkDanger(){
+  const text = [$("babyStatus").value, $("customSituation").value, $("nurseNote").value].join(" ");
+  return DANGER_WORDS.filter(w => text.includes(w));
+}
+
+function resolveSituation(){
+  const sel = $("situation").value;
+  if (sel !== "custom") return { key: sel, matched: true, custom: false };
+  const txt = $("customSituation").value.toLowerCase();
+  for (const key in CUSTOM_KEYWORDS) {
+    if (CUSTOM_KEYWORDS[key].some(w => txt.includes(w))) return { key, matched: true, custom: true };
+  }
+  return { key: null, matched: false, custom: true };
+}
+
+function pickKnowledge(key){
+  const items = KNOWLEDGE[key].items;
+  const lastKey = PREFIX + "last_" + key;
+  const last = parseInt(localStorage.getItem(lastKey) || "-1", 10);
+  let idx = Math.floor(Math.random() * items.length);
+  if (items.length > 1 && idx === last) idx = (idx + 1) % items.length;
+  localStorage.setItem(lastKey, idx);
+  return items[idx];
+}
+
+function buildMessage(d, kb, sitKey){
+  const P = PERSONAS[d.persona];
+  const pt = PARTICLES[d.particle] || PARTICLES["ค่ะ"];
+  const fill = s => s.split("{name}").join(d.name).split("{pn}").join(pt.pn).split("{p}").join(pt.p);
+  const opt = s => (s ? s : null);
+
+  const clinical = [];
+  if (d.weight)  clinical.push("⚖️ น้ำหนัก: " + d.weight);
+  if (d.perFeed) clinical.push("🍼 นมที่ได้ต่อมื้อ: " + d.perFeed);
+  if (d.stock)   clinical.push("🧊 นมแม่คงเหลือที่ NICU 1: " + d.stock);
+
+  const k = kb ? fill(kb.k) : "[⚠️ ไม่พบความรู้ในคลังที่อนุมัติ — พยาบาลโปรดเขียนเอง]";
+  const a = kb ? fill(kb.a) : "";
+  const alertLine = kb && kb.alert ? fill(kb.alert) : "";
+  const phase = d.phase && PHASE_NOTE[d.phase] ? fill(PHASE_NOTE[d.phase]) : "";
+  const cheer = fill(pick(P.cheer));
+  const note = d.nurseNote ? `💬 จากพี่พยาบาล: "${d.nurseNote}"` : "";
+  const forDad = d.persona === "dad";
+  const parents = forDad ? "พ่อกับแม่" : "แม่";
+  const today = new Date().toLocaleDateString("th-TH", { day: "numeric", month: "short" });
+
+  let L = [];
+  switch (d.style) {
+    case "letter":
+      L = [`💌 ถึง${parents}ที่รัก`, fill(pick(P.childOpen)), "",
+           `📍 วันนี้หนู: ${d.status}`, ...clinical, "",
+           `พี่พยาบาลเล่าให้หนูฟังว่า ${k}`, opt(a && "👉 " + a), opt(alertLine), opt(note), "",
+           cheer, "", `รัก${parents}ที่สุด ${P.emoji}`, `— ${d.name}`];
+      break;
+    case "diary":
+      L = [`📔 บันทึกของ${d.name} | ${today}`, fill(pick(P.childOpen)), "",
+           `📍 วันนี้: ${d.status}`, ...clinical, "",
+           `📚 วันนี้หนูได้รู้ว่า ${k}`, opt(a && "👉 " + a), opt(alertLine), opt(note), "",
+           cheer];
+      break;
+    case "team":
+      L = [`🏥 อัปเดตจากทีม NICU 1`, fill(pick(P.teamOpen)), "",
+           `📍 อาการวันนี้: ${d.status}`, ...clinical, "",
+           opt(phase && "🗓️ " + phase), `💡 ความรู้วันนี้: ${k}`, opt(a && "👉 ลองทำดู: " + a), opt(alertLine), opt(note), "",
+           cheer, "— ทีมพยาบาล NICU 1 🤍"];
+      break;
+    case "short":
+      L = [`${P.emoji} ${d.name} วันนี้: ${d.status}`,
+           opt(clinical.join(" | ")),
+           `💡 ${a || k}`, opt(alertLine), opt(note),
+           cheer];
+      break;
+    case "encourage":
+      L = [`🌷 ถึง${parents}ของ${d.name}`, fill(ENCOURAGE[sitKey] || ENCOURAGE.none), opt(phase), "",
+           `📍 ${d.name}วันนี้: ${d.status}`, ...clinical, "",
+           `💡 ${k}`, opt(a && "👉 " + a), opt(alertLine), opt(note), "",
+           cheer];
+      break;
+  }
+  return L.filter(x => x !== null).join("\n").replace(/\n{3,}/g, "\n\n").trim();
+}
+
+function generate(mode){
+  hideBanners();
+
+  const privacy = checkPrivacy();
+  if (privacy.length) {
+    showBanner("privacyBanner", "🔒 <b>ยังสร้างข้อความไม่ได้ (ข้อมูลส่วนบุคคล)</b><br>• " + privacy.join("<br>• "));
+    $("previewCard").style.display = "none";
+    return;
+  }
+
+  const sit = resolveSituation();
+
+  if (mode === "style") {
+    const s = $("style").value;
+    $("style").value = STYLE_ORDER[(STYLE_ORDER.indexOf(s) + 1) % STYLE_ORDER.length];
+    const cur = $("persona").value; let np;
+    do { np = pick(PERSONA_ORDER); } while (np === cur);
+    $("persona").value = np;
+  } else if (mode === "today") {
+    const t = TODAY_PICK[sit.key || "none"];
+    $("persona").value = t.persona; $("style").value = t.style;
+  }
+  save();
+
+  let name = $("babyName").value.trim() || "น้อง";
+  if (!name.startsWith("น้อง")) name = "น้อง" + name;
+  const d = {
+    name,
+    status: $("babyStatus").value.trim() || "อยู่ในการดูแลของทีมอย่างใกล้ชิด",
+    weight: $("weight").value.trim(),
+    perFeed: $("perFeed").value.trim(),
+    stock: $("stock").value.trim(),
+    phase: $("phase").value,
+    persona: $("persona").value,
+    style: $("style").value,
+    particle: $("particle").value,
+    nurseNote: $("nurseNote").value.trim()
+  };
+
+  let kb = null;
+  if (sit.key) {
+    kb = pickKnowledge(sit.key);
+    if (sit.custom) showBanner("kbBanner", `ℹ️ ระบบจับคู่สถานการณ์ที่คุณพิมพ์กับหมวด <b>"${KNOWLEDGE[sit.key].label}"</b> — โปรดตรวจสอบความเหมาะสม`);
+  } else {
+    showBanner("kbBanner", "⚠️ <b>ไม่พบความรู้ในคลังที่อนุมัติ</b> สำหรับสถานการณ์ที่พิมพ์ ระบบจะไม่แต่งคำแนะนำขึ้นเอง กรุณาเลือกสถานการณ์จากรายการ");
+  }
+
+  const danger = checkDanger();
+  if (danger.length) {
+    showBanner("dangerBanner", `🚨 <b>พบคำที่อาจเป็นสัญญาณอันตราย:</b> ${danger.join(", ")}<br>โปรดดำเนินการตามแนวทางของหน่วยงาน`);
+  }
+
+  $("outputBox").value = buildMessage(d, kb, sit.key);
+  $("styleInfo").textContent = `บุคลิก: ${PERSONAS[d.persona].name} • รูปแบบ: ${STYLE_NAMES[d.style]}`;
+  $("reviewed").checked = false;
+  updateCopy(); updateCount();
+  $("previewCard").style.display = "block";
+  $("previewCard").scrollIntoView({ behavior: "smooth" });
+}
+
+function updateCopy(){ $("copyBtn").disabled = !$("reviewed").checked; }
+function updateCount(){ $("charCount").textContent = $("outputBox").value.length + " ตัวอักษร"; }
+
+async function copyText(){
+  if (!$("reviewed").checked) return;
+  const text = $("outputBox").value;
+  try { await navigator.clipboard.writeText(text); }
+  catch (e) { $("outputBox").select(); document.execCommand("copy"); }
+  const b = $("copyBtn");
+  b.textContent = "✅ คัดลอกแล้ว — ไปวางใน LINE ได้เลย";
+  setTimeout(() => b.textContent = "📋 คัดลอกไปส่ง LINE", 2000);
+}
+
+window.onload = load;
+</script>
+</body>
+</html>
