@@ -1,0 +1,1626 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MilkUp NICU - Message Generator</title>
+  
+  <!-- Load Google Fonts for Sarabun (Heading fallback) and Courier Prime (Body/Monospace) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --brand-primary: #B3537E; /* Text/Brand Pink (used 3x in original) */
+      --brand-bg-pink: #F5E5EC;  /* Shape fill Pink (used 3x in original) */
+      --brand-secondary: #4F859E; /* Text Blue (used 2x in original) */
+      --brand-muted: #828282;     /* Text Gray (used 1x in original) */
+      
+      --neutral-bg: #FAF5F7;
+      --neutral-surface: #ffffff;
+      --neutral-border: #E8DFE3;
+      --text-main: #333333;
+      
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --shadow: 0 4px 15px rgba(179, 83, 126, 0.08);
+      
+      --font-heading: 'Sarabun', 'TH Sarabun New', sans-serif;
+      --font-body: 'Courier Prime', 'Courier New', Courier, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--neutral-bg);
+      font-family: var(--font-body);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-heading);
+      color: var(--brand-primary);
+      font-weight: 600;
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 20px;
+      width: 100%;
+      flex-grow: 1;
+    }
+
+    /* Header Design corresponding to the cute pink/blue banner */
+    header {
+      background: linear-gradient(135deg, #FFF0F5 0%, #FFF 100%);
+      border-bottom: 3px solid var(--brand-bg-pink);
+      padding: 15px 20px;
+    }
+    
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-badge {
+      background-color: var(--brand-bg-pink);
+      color: var(--brand-primary);
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+      border: 2px solid var(--brand-primary);
+    }
+
+    .brand-title {
+      font-size: 28px;
+      line-height: 1.1;
+      font-weight: 700;
+      color: var(--brand-primary);
+    }
+    
+    .brand-title span {
+      color: var(--brand-secondary);
+      font-weight: 300;
+    }
+
+    .brand-subtitle {
+      font-size: 14px;
+      color: var(--brand-secondary);
+      font-family: var(--font-heading);
+      font-weight: 600;
+    }
+
+    .header-tagline {
+      background-color: var(--brand-bg-pink);
+      color: var(--brand-primary);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 2px 5px rgba(179, 83, 126, 0.1);
+      border: 1px dashed var(--brand-primary);
+    }
+
+    /* Main Workspace Layout */
+    .app-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 992px) {
+      .app-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Panels & Cards */
+    .panel {
+      background-color: var(--neutral-surface);
+      border: 1px solid var(--neutral-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .panel-title {
+      font-size: 20px;
+      border-bottom: 2px solid var(--brand-bg-pink);
+      padding-bottom: 10px;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Form Styles */
+    .form-group-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    @media (max-width: 576px) {
+      .form-group-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.full-width {
+      grid-column: span 2;
+    }
+
+    @media (max-width: 576px) {
+      .form-group.full-width {
+        grid-column: span 1;
+      }
+    }
+
+    label {
+      font-family: var(--font-heading);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--brand-primary);
+    }
+
+    input[type="text"], select, textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--neutral-border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-heading);
+      font-size: 15px;
+      color: var(--text-main);
+      background-color: #FAFAFA;
+      transition: all 0.2s ease;
+    }
+
+    input[type="text"]:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--brand-primary);
+      background-color: #fff;
+      box-shadow: 0 0 0 3px rgba(179, 83, 126, 0.15);
+    }
+
+    /* Mother's Situation Dropdown Selector */
+    .situation-card {
+      border: 2px solid var(--neutral-border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background-color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-heading);
+      font-weight: 600;
+    }
+
+    .situation-card:hover {
+      border-color: var(--brand-primary);
+      background-color: var(--neutral-bg);
+    }
+
+    .situation-card.active {
+      border-color: var(--brand-primary);
+      background-color: var(--brand-bg-pink);
+      color: var(--brand-primary);
+    }
+
+    .situations-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      max-height: 250px;
+      overflow-y: auto;
+      padding-right: 5px;
+      border: 1px solid var(--neutral-border);
+      border-radius: var(--radius-md);
+      padding: 10px;
+      background-color: #FDFBFC;
+    }
+
+    /* Styles for Persona & Storytelling Choices */
+    .selection-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 10px;
+    }
+
+    .card-choice {
+      border: 2px solid var(--neutral-border);
+      border-radius: var(--radius-md);
+      padding: 12px 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background-color: #FFF;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-choice:hover {
+      border-color: var(--brand-secondary);
+      transform: translateY(-2px);
+    }
+
+    .card-choice.active {
+      border-color: var(--brand-primary);
+      background-color: var(--brand-bg-pink);
+      box-shadow: 0 4px 10px rgba(179, 83, 126, 0.15);
+    }
+
+    .card-choice .icon {
+      font-size: 28px;
+    }
+
+    .card-choice .title {
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--brand-primary);
+    }
+
+    .card-choice .desc {
+      font-family: var(--font-heading);
+      font-size: 11px;
+      color: var(--brand-muted);
+      line-height: 1.2;
+    }
+
+    /* Clinical Knowledge Layer Box */
+    .clinical-knowledge-box {
+      background-color: #F0F7FA;
+      border-left: 4px solid var(--brand-secondary);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      font-family: var(--font-heading);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .clinical-knowledge-header {
+      font-weight: 700;
+      color: var(--brand-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 15px;
+    }
+
+    .clinical-knowledge-content {
+      font-size: 14px;
+      line-height: 1.4;
+      color: #3C5A6A;
+    }
+
+    .clinical-knowledge-ref {
+      font-size: 12px;
+      font-weight: 600;
+      align-self: flex-end;
+      color: var(--brand-secondary);
+      background-color: #DEEFF5;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    /* Core Action Buttons (Section 7) */
+    .main-actions-container {
+      background-color: #FFF;
+      border: 1px solid var(--brand-bg-pink);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .action-buttons-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 576px) {
+      .action-buttons-group {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .btn {
+      padding: 12px 18px;
+      border-radius: var(--radius-md);
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+
+    .btn-primary {
+      background-color: var(--brand-primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background-color: #9C416A;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background-color: #FFF;
+      border-color: var(--brand-secondary);
+      color: var(--brand-secondary);
+    }
+
+    .btn-secondary:hover {
+      background-color: #F0F7FA;
+      transform: translateY(-1px);
+    }
+
+    .btn-accent {
+      background-color: #FFF;
+      border-color: var(--brand-primary);
+      color: var(--brand-primary);
+    }
+
+    .btn-accent:hover {
+      background-color: var(--brand-bg-pink);
+      transform: translateY(-1px);
+    }
+
+    .btn-recommend {
+      background: linear-gradient(135deg, var(--brand-primary) 0%, #D46A98 100%);
+      color: #fff;
+      grid-column: span 2;
+      box-shadow: 0 4px 10px rgba(179, 83, 126, 0.15);
+    }
+
+    @media (max-width: 576px) {
+      .btn-recommend {
+        grid-column: span 1;
+      }
+    }
+
+    .btn-recommend:hover {
+      background: linear-gradient(135deg, #9C416A 0%, var(--brand-primary) 100%);
+      transform: translateY(-1px);
+    }
+
+    /* RIGHT COLUMN - Device Mockup Preview (Matching docx photo) */
+    .device-container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      position: sticky;
+      top: 20px;
+    }
+
+    .phone-mockup {
+      width: 100%;
+      max-width: 420px;
+      background-color: #000;
+      border-radius: 40px;
+      padding: 12px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+      border: 4px solid #333;
+    }
+
+    .phone-screen {
+      background-color: var(--neutral-bg);
+      border-radius: 30px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      aspect-ratio: 9 / 19;
+      max-height: 820px;
+      overflow-y: auto;
+      border: 2px solid #222;
+      position: relative;
+    }
+
+    /* Custom scrollbar for preview */
+    .phone-screen::-webkit-scrollbar {
+      width: 4px;
+    }
+    .phone-screen::-webkit-scrollbar-thumb {
+      background-color: var(--brand-bg-pink);
+      border-radius: 2px;
+    }
+
+    /* Mockup internal components */
+    .phone-header {
+      background: linear-gradient(180deg, #FDECEF 0%, #FFF 100%);
+      padding: 15px;
+      text-align: center;
+      border-bottom: 2px solid var(--brand-bg-pink);
+      position: relative;
+    }
+
+    .phone-header-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: var(--brand-primary);
+    }
+
+    .phone-header-subtitle {
+      font-size: 11px;
+      color: var(--brand-secondary);
+      font-family: var(--font-heading);
+      font-weight: 600;
+    }
+
+    .phone-content {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Preview message card bubble */
+    .preview-card {
+      background-color: #FFF;
+      border: 1.5px solid var(--brand-bg-pink);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      box-shadow: 0 3px 8px rgba(179, 83, 126, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .preview-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px dashed var(--brand-bg-pink);
+      padding-bottom: 6px;
+    }
+
+    .preview-badge {
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--brand-primary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .preview-ref-link {
+      font-family: var(--font-heading);
+      font-size: 11px;
+      color: var(--brand-secondary);
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .preview-text-box {
+      font-family: var(--font-heading);
+      font-size: 15px;
+      line-height: 1.4;
+      color: #333;
+      white-space: pre-wrap;
+      border: none;
+      resize: vertical;
+      background: #FFFAFC;
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      min-height: 150px;
+      border: 1px solid #FFF1F6;
+      transition: all 0.2s;
+    }
+
+    .preview-text-box:focus {
+      outline: none;
+      border-color: var(--brand-primary);
+      background: #FFF;
+    }
+
+    /* Nurse Safety Warning Bar */
+    .safety-warning-bar {
+      background-color: #FDF4E7;
+      border: 1px solid #F5CFA2;
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .safety-warning-icon {
+      color: #D97706;
+      font-size: 16px;
+      margin-top: 2px;
+    }
+
+    .safety-warning-text {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      color: #B45309;
+      line-height: 1.3;
+    }
+
+    .safety-warning-text strong {
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    /* Bottom action bar inside mockup */
+    .phone-bottom-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .btn-phone-action {
+      padding: 10px;
+      font-size: 14px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-heading);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-phone-primary {
+      background-color: #25D366; /* WhatsApp/Line vibe green */
+      color: #fff;
+    }
+
+    .btn-phone-primary:hover {
+      background-color: #20BA5A;
+    }
+
+    .btn-phone-secondary {
+      background-color: var(--brand-secondary);
+      color: #fff;
+    }
+
+    .btn-phone-secondary:hover {
+      background-color: #3F6A7E;
+    }
+
+    .btn-phone-danger {
+      background-color: #FFF;
+      color: var(--brand-muted);
+      border: 1px solid var(--neutral-border);
+    }
+
+    .btn-phone-danger:hover {
+      background-color: #F3F3F3;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background-color: #333;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-family: var(--font-heading);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 1000;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      opacity: 0;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* LINE share popup simulator modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal {
+      background-color: #FFF;
+      border-radius: var(--radius-lg);
+      width: 90%;
+      max-width: 450px;
+      padding: 24px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transform: scale(0.9);
+      transition: transform 0.2s ease;
+    }
+
+    .modal-overlay.show .modal {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1.5px solid var(--neutral-border);
+      padding-bottom: 12px;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      color: var(--brand-primary);
+    }
+
+    .modal-body {
+      font-family: var(--font-heading);
+      font-size: 15px;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .line-chat-preview {
+      background-color: #7494C0;
+      border-radius: var(--radius-md);
+      padding: 15px;
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    .line-bubble {
+      background-color: #8DE088;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-family: var(--font-heading);
+      font-size: 13px;
+      color: #000;
+      max-width: 85%;
+      align-self: flex-end;
+      position: relative;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .line-bubble::after {
+      content: '';
+      position: absolute;
+      right: -6px;
+      top: 10px;
+      border-width: 6px 0 6px 6px;
+      border-color: transparent transparent transparent #8DE088;
+      border-style: solid;
+    }
+
+    /* Section Instructions Accordion helper */
+    .accordion-trigger {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      background: none;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .badge-today-selected {
+      background-color: #FFEAEF;
+      border: 1px solid var(--brand-primary);
+      color: var(--brand-primary);
+      border-radius: 12px;
+      padding: 1px 8px;
+      font-size: 11px;
+      font-family: var(--font-heading);
+      font-weight: 600;
+    }
+
+    /* Simple Footer */
+    footer {
+      text-align: center;
+      padding: 24px;
+      color: var(--brand-muted);
+      font-family: var(--font-heading);
+      font-size: 13px;
+      border-top: 1px solid var(--neutral-border);
+      background-color: #FFF;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- App Header -->
+  <header>
+    <div class="header-content">
+      <div class="logo-container">
+        <div class="logo-badge">👶</div>
+        <div>
+          <div class="brand-title">MilkUp <span>NICU</span></div>
+          <div class="brand-subtitle">หอผู้ป่วยหนักทารกแรกเกิด 1 (NICU 1)</div>
+        </div>
+      </div>
+      <div class="header-tagline">ทุกหยดน้ำนมมีความหมาย 💕</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="app-grid">
+      
+      <!-- LEFT COLUMN: Inputs and Customization -->
+      <div style="display: flex; flex-direction: column; gap: 24px;">
+        
+        <!-- Input Form Section -->
+        <div class="panel">
+          <h2 class="panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--brand-primary);"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4z"></path></svg>
+            ข้อมูลจำลองของทารกและคุณแม่
+          </h2>
+          
+          <div class="form-group-grid">
+            <!-- Baby's nickname -->
+            <div class="form-group">
+              <label for="baby_nickname">ชื่อเล่นของทารก</label>
+              <input type="text" id="baby_nickname" value="น้องมะลิ" placeholder="กรอกชื่อเล่นลูก เช่น น้องมะลิ">
+            </div>
+            
+            <!-- Baby's Weight -->
+            <div class="form-group">
+              <label for="baby_weight">น้ำหนักวันนี้ (กรัม)</label>
+              <input type="text" id="baby_weight" value="1,200 กรัม" placeholder="เช่น 1,200 กรัม">
+            </div>
+
+            <!-- Baby's Today's Status -->
+            <div class="form-group full-width">
+              <label for="baby_status">สถานการณ์ของลูกวันนี้</label>
+              <input type="text" id="baby_status" value="อาการคงที่ อยู่ในตู้อบ" placeholder="เช่น อาการคงที่ อยู่ในตู้อบ">
+            </div>
+
+            <!-- Mother's postpartum status/needs -->
+            <div class="form-group full-width">
+              <label style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                <span>สถานการณ์ของคุณแม่วันนี้</span>
+                <span id="situations-badge" style="font-size: 11px; font-weight: normal; color: var(--brand-secondary);">เลือก 1 ข้อ</span>
+              </label>
+              <div class="situations-list" id="situations-container">
+                <!-- Situation choices dynamically built in script -->
+              </div>
+            </div>
+
+            <!-- Milk Feed Volume -->
+            <div class="form-group">
+              <label for="milk_feed">ปริมาณนมต่อมื้อ (ถ้ามี)</label>
+              <input type="text" id="milk_feed" value="10 ซีซี" placeholder="เช่น 10 ซีซี (ใส่เพื่อเป็นทางเลือก)">
+            </div>
+
+            <!-- Remaining Milk at NICU -->
+            <div class="form-group">
+              <label for="milk_stock">ปริมาณน้ำนมคงเหลือที่ NICU</label>
+              <input type="text" id="milk_stock" value="5 ขวด" placeholder="เช่น 5 ขวด">
+            </div>
+
+            <!-- Nurse Note -->
+            <div class="form-group full-width">
+              <label for="nurse_notes">พยาบาล บันทึกเพิ่มเติม (บริบทที่อยากเน้น)</label>
+              <textarea id="nurse_notes" rows="2" placeholder="เช่น คุณแม่ตั้งใจมาก, คุณพ่อคอยช่วยบีบกระตุ้น หรือคำชื่นชมเพิ่มเติม"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Selection Panel: Persona -->
+        <div class="panel">
+          <h2 class="panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--brand-primary);"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            เลือกบุคลิกข้อความ (Personas)
+          </h2>
+          <div class="selection-grid" id="personas-grid">
+            <!-- Dynamic Persona Cards -->
+          </div>
+        </div>
+
+        <!-- Selection Panel: Storytelling Style -->
+        <div class="panel">
+          <h2 class="panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--brand-primary);"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+            รูปแบบการเล่าเรื่อง (Storytelling Styles)
+          </h2>
+          <div class="selection-grid" id="styles-grid">
+            <!-- Dynamic Style Cards -->
+          </div>
+        </div>
+
+        <!-- Clinical Knowledge Panel (Safe Reference Layer) -->
+        <div class="clinical-knowledge-box" id="clinical-ref-box">
+          <div class="clinical-knowledge-header">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <span>Clinical Knowledge Layer (ข้อมูลทางการแพทย์ที่อนุมัติแล้ว)</span>
+          </div>
+          <div class="clinical-knowledge-content" id="clinical-text">
+            กรุณาเลือกสถานการณ์เพื่อแสดงข้อมูลสนับสนุนทางคลินิกที่ผ่านการตรวจทานแล้ว
+          </div>
+          <div class="clinical-knowledge-ref" id="clinical-ref">
+            อ้างอิง: -
+          </div>
+        </div>
+
+        <!-- Main Trigger / AI Suggestion Buttons (Section 7) -->
+        <div class="main-actions-container">
+          <h3 style="font-family: var(--font-heading); font-size: 16px; color: var(--brand-primary); margin-bottom: 2px; display: flex; align-items: center; gap: 6px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+            เครื่องมือช่วยรังสรรค์และจัดระเบียบข้อความ
+          </h3>
+          <div class="action-buttons-group">
+            <button class="btn btn-recommend" id="btn-auto-recommend">
+              <span class="icon">✨</span> ข้อความที่เหมาะกับวันนี้ (AI แนะนำสไตล์)
+            </button>
+            <button class="btn btn-primary" id="btn-generate-new">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+              สร้างข้อความใหม่ (คลังถ้อยคำ)
+            </button>
+            <button class="btn btn-secondary" id="btn-generate-another">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2.1l4 4-4 4"></path><path d="M3 22v-6c0-1.1.9-2 2-2h14"></path></svg>
+              สร้างอีกสไตล์ (เปลี่ยนเสียงเล่า)
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: Smartphone Device Mockup (Section 8) -->
+      <div class="device-container">
+        <div class="phone-mockup">
+          <div class="phone-screen">
+            
+            <!-- Cute Top Bar -->
+            <div class="phone-header">
+              <div style="font-size: 10px; color: var(--brand-muted); margin-bottom: 4px; display: flex; justify-content: space-between; width: 100%; padding: 0 5px;">
+                <span>9:41</span>
+                <span>📶 🔋</span>
+              </div>
+              <div class="phone-header-title">🌸 MilkUp NICU</div>
+              <div class="phone-header-subtitle">หอผู้ป่วยหนักทารกแรกเกิด 1 (NICU 1)</div>
+            </div>
+
+            <!-- Preview Workspace -->
+            <div class="phone-content">
+              
+              <!-- Active Info Summary Box -->
+              <div style="background-color: var(--brand-bg-pink); border-radius: var(--radius-md); padding: 10px; font-family: var(--font-heading); font-size: 12px; display: flex; flex-direction: column; gap: 4px;">
+                <div style="color: var(--brand-primary); font-weight: bold; border-bottom: 1px solid rgba(179,83,126,0.15); padding-bottom: 2px;">
+                  📋 รายละเอียดวันวันนี้
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; color: #555;">
+                  <span>👶 <b>ทารก:</b> <span id="summary-name">น้องมะลิ</span></span>
+                  <span>⚖️ <b>น้ำหนัก:</b> <span id="summary-weight">1,200 กรัม</span></span>
+                  <span style="grid-column: span 2;">🏥 <b>อาการ:</b> <span id="summary-status">อาการคงที่ อยู่ในตู้อบ</span></span>
+                  <span>🍼 <b>มื้อละ:</b> <span id="summary-feed">10 ซีซี</span></span>
+                  <span>📦 <b>นมคลัง:</b> <span id="summary-stock">5 ขวด</span></span>
+                </div>
+              </div>
+
+              <!-- Message Preview Card -->
+              <div class="preview-card">
+                <div class="preview-card-header">
+                  <div class="preview-badge" id="preview-persona-badge">
+                    👶 นักสู้ตัวจิ๋ว
+                  </div>
+                  <div class="preview-ref-link" id="preview-style-badge">
+                    📝 ลูกเขียนจดหมาย
+                  </div>
+                </div>
+
+                <!-- Editable text area directly showing draft -->
+                <textarea class="preview-text-box" id="generated-message" placeholder="กรอกข้อมูลเพื่อรังสรรค์ข้อความ..."></textarea>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
+                  <span style="font-family: var(--font-heading); font-size: 11px; color: var(--brand-muted);" id="char-counter">0 ตัวอักษร</span>
+                  <span class="preview-ref-link" style="background-color: #F0F7FA; padding: 2px 6px; border-radius: 6px;" id="message-ref">
+                    📚 บทเรียนนมแม่ หน้า 12
+                  </span>
+                </div>
+              </div>
+
+              <!-- Safety Alert Box (Section 10 Requirement) -->
+              <div class="safety-warning-bar">
+                <span class="safety-warning-icon">⚠️</span>
+                <div class="safety-warning-text">
+                  <strong>Nurse Review Required</strong>
+                  ข้อความนี้สร้างขึ้นโดยอิงคลังความรู้ทางคลินิก กรุณาตรวจสอบคำแนะนำและตัวเลขให้เรียบร้อยก่อนส่งหาคุณแม่ทุกครั้งเพื่อความปลอดภัยค่ะ
+                </div>
+              </div>
+
+              <!-- Device Actions -->
+              <div class="phone-bottom-actions">
+                <button class="btn-phone-action btn-phone-primary" id="btn-share-line">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+                  ส่งข้อความผ่านแอป LINE
+                </button>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                  <button class="btn-phone-action btn-phone-secondary" id="btn-copy">
+                    📁 คัดลอกข้อความ
+                  </button>
+                  <button class="btn-phone-action btn-phone-danger" id="btn-clear-fields">
+                    🧹 ล้างข้อมูลใหม่
+                  </button>
+                </div>
+              </div>
+
+              <!-- Instructions / Guidance Accordion inside Phone mockup -->
+              <div style="border-top: 1px solid var(--neutral-border); padding-top: 10px;">
+                <div class="accordion-trigger" id="guide-trigger" style="color: var(--brand-muted); font-family: var(--font-heading); font-size: 12px;">
+                  <span>💡 คำอธิบายการควบคุมและการบำบัดรักษา</span>
+                  <span>▼</span>
+                </div>
+                <div id="guide-content" style="display: none; padding-top: 8px; font-family: var(--font-heading); font-size: 11px; color: var(--brand-muted); line-height: 1.4;">
+                  ระบบนี้แบ่งแยกชั้นการเรียบเรียงภาษาพยาบาล (Creative) ออกจากข้อมูลสุขภาพ (Clinical Base) สาระและประจักษ์พยานความปลอดภัยจะไม่คลาดเคลื่อน และไม่อาจแก้ไขเป็นความเข้าใจผิดพยาบาลจำเป็นต้องส่งมอบความห่วงใยตามมาตรฐานการพยาบาลอย่างเคร่งครัด
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Element -->
+  <div class="toast" id="toast-notif">
+    <span>✅</span> <span id="toast-message">คัดลอกข้อความไปยังคลิปบอร์ดแล้ว!</span>
+  </div>
+
+  <!-- Simulated LINE Chat Modal -->
+  <div class="modal-overlay" id="line-modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" style="display: flex; align-items: center; gap: 8px;">
+          <span style="background-color: #00C300; color: white; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold;">LINE</span>
+          จำลองการแชร์ข้อความ
+        </h3>
+        <button id="close-modal" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--brand-muted);">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="margin-bottom: 10px; font-family: var(--font-heading);">ระบบจำลองการส่งข้อความไปยังห้องแชทครอบครัว <b>คุณแม่น้องมะลิ</b> ทางแอป LINE เรียบร้อย:</p>
+        <div class="line-chat-preview">
+          <div class="line-bubble" id="line-chat-text">
+            ข้อความจำลอง...
+          </div>
+        </div>
+        <p style="margin-top: 12px; font-size: 12px; color: var(--brand-muted); font-family: var(--font-heading);">* ในเวอร์ชันพกพาใช้งานจริง ปุ่มส่งทาง LINE จะเปิดแอปพลิเคชัน LINE เพื่อให้พยาบาลวางข้อความและปรับแต่งก่อนส่งอย่างสมบูรณ์</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btn-modal-close" style="padding: 6px 14px;">ตกลง</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footnotes and standard app footer -->
+  <footer>
+    <p><b>MilkUp NICU</b> • พัฒนาโดยความร่วมมือระหว่างทีมพยาบาลและบุคลากร NICU 1</p>
+    <p style="margin-top: 4px; font-size: 11px; color: var(--brand-muted);">สิทธิ์การใช้งานจำกัดเฉพาะพยาบาลและบุคลากรผู้ได้รับมอบหมายอย่างเป็นทางการเท่านั้น</p>
+  </footer>
+
+  <!-- App Clinical Knowledge Database & Scripts -->
+  <script id="app-data" type="application/json">{"clinical_guidelines": [{"topic": "วันแรกหลังคลอด / เริ่มต้นการบีบหรือปั๊มน้ำนม", "text": "วันแรกหลังคลอดเน้นการกระตุ้นน้ำนมด้วยการบีบด้วยมือเป็นหลักเพื่อเก็บน้ำนมเหลือง (Colostrum) ที่มีคุณค่าสูงมากสำหรับทารก NICU การบีบกระตุ้นควรทำทุก 2-3 ชั่วโมงอย่างสม่ำเสมอ แม้ได้น้ำนมเพียงเล็กน้อยก็มีประโยชน์มหาศาล", "ref": "บทเรียนนมแม่ หน้า 5"}, {"topic": "น้ำนมน้อยหรือกังวลว่าปริมาณน้ำนมไม่เพียงพอ", "text": "ความกังวลทำให้น้ำนมไหลน้อยลง แนะนำให้คุณแม่ผ่อนคลาย นวดเต้านมเบาๆ และใช้วิธีปั๊มนมข้างเตียงลูกใน NICU หรือมองภาพลูกขณะปั๊มนมเพื่อกระตุ้นฮอร์โมนอ็อกซิโทซิน (Oxytocin) และเน้นย้ำว่ากระเพาะของทารกแรกเกิดมีขนาดเล็กมากในวันแรกๆ", "ref": "บทเรียนนมแม่ หน้า 12"}, {"topic": "คัดตึงเต้านม", "text": "การระบายน้ำนมออกเป็นสิ่งสำคัญที่สุด ประคบอุ่นเบาๆ ก่อนบีบหรือปั๊มนมเพื่อช่วยให้ทารกดูดได้ง่ายขึ้น หรือประคบเย็นหลังระบายน้ำนมเพื่อลดอาการปวดบวม หลีกเลี่ยงการนวดเค้นที่รุนแรงเพื่อป้องกันท่อน้ำนมอักเสบ", "ref": "คู่มือการดูแลเต้านมหลังคลอด หน้า 8"}, {"topic": "น้ำนมมาได้ดีหรือมีปริมาณค่อนข้างสม่ำเสมอ", "text": "รักษาความถี่ในการปั๊มหรือบีบน้ำนมอย่างต่อเนื่อง 8-10 ครั้งต่อวัน เพื่อรักษาระดับฮอร์โมนกระตุ้นการสร้างน้ำนมอย่างสม่ำเสมอ และดูแลการเก็บรักษาน้ำนมอย่างถูกสุขลักษณะเพื่อส่งต่อให้เจ้าตัวเล็กใน NICU", "ref": "แนวปฏิบัติการจัดการน้ำนมแม่ใน NICU หน้า 15"}, {"topic": "เหนื่อยล้า เครียด หรือรู้สึกกดดัน", "text": "การพักผ่อนเป็นกุญแจสำคัญ แนะนำให้คุณแม่พักสมอง นอนหลับสั้นๆ หรือดื่มน้ำอุ่นเพื่อลดความตึงเครียด การดูแลจิตใจของคุณแม่ส่งผลโดยตรงต่อการหลั่งน้ำนม ทีม NICU พร้อมดูแลและสนับสนุนในทุกก้าว", "ref": "แนวทางการส่งเสริมสุขภาพจิตมารดา NICU หน้า 22"}, {"topic": "พร้อมเรียนรู้หรือขอคำแนะนำเพิ่มเติม", "text": "ยินดีให้คำปรึกษาและสาธิตการบีบน้ำนมด้วยมือ การเข้าเต้าที่ถูกต้อง และการเก็บรักษาน้ำนมอย่างถูกวิธี สามารถสอบถามพยาบาลประจำตึกได้ตลอดเวลาเพื่อร่วมมือกันดูแลเจ้าตัวน้อย", "ref": "หลักสูตรฝึกอบรมนมแม่สำหรับมารดา NICU หน้า 4"}]}</script>
+  <script>
+    // Raw Clinical Knowledge & Default Options from uploaded files
+    const RAW_EMBED = JSON.parse(document.getElementById('app-data').textContent);
+    
+    // Fallback database if embed doesn't load fully
+    const clinicalGuidelines = (RAW_EMBED && RAW_EMBED.clinical_guidelines) ? RAW_EMBED.clinical_guidelines : [
+      {
+        topic: "วันแรกหลังคลอด / เริ่มต้นการบีบหรือปั๊มน้ำนม",
+        text: "วันแรกหลังคลอดเน้นการกระตุ้นน้ำนมด้วยการบีบด้วยมือเป็นหลักเพื่อเก็บน้ำนมเหลือง (Colostrum) ที่มีคุณค่าสูงมากสำหรับทารก NICU การบีบกระตุ้นควรทำทุก 2-3 ชั่วโมงอย่างสม่ำเสมอ แม้ได้น้ำนมเพียงเล็กน้อยก็มีประโยชน์มหาศาล",
+        ref: "บทเรียนนมแม่ หน้า 5"
+      },
+      {
+        topic: "น้ำนมน้อยหรือกังวลว่าปริมาณน้ำนมไม่เพียงพอ",
+        text: "ความกังวลทำให้น้ำนมไหลน้อยลง แนะนำให้คุณแม่ผ่อนคลาย นวดเต้านมเบาๆ และใช้วิธีปั๊มนมข้างเตียงลูกใน NICU หรือมองภาพลูกขณะปั๊มนมเพื่อกระตุ้นฮอร์โมนอ็อกซิโทซิน (Oxytocin) และเน้นย้ำว่ากระเพาะของทารกแรกเกิดมีขนาดเล็กมากในวันแรกๆ",
+        ref: "บทเรียนนมแม่ หน้า 12"
+      },
+      {
+        topic: "คัดตึงเต้านม",
+        text: "การระบายน้ำนมออกเป็นสิ่งสำคัญที่สุด ประคบอุ่นเบาๆ ก่อนบีบหรือปั๊มนมเพื่อช่วยให้ทารกดูดได้ง่ายขึ้น หรือประคบเย็นหลังระบายน้ำนมเพื่อลดอาการปวดบวม หลีกเลี่ยงการนวดเค้นที่รุนแรงเพื่อป้องกันท่อน้ำนมอักเสบ",
+        ref: "คู่มือการดูแลเต้านมหลังคลอด หน้า 8"
+      },
+      {
+        topic: "น้ำนมมาได้ดีหรือมีปริมาณค่อนข้างสม่ำเสมอ",
+        text: "รักษาความถี่ในการปั๊มหรือบีบน้ำนมอย่างต่อเนื่อง 8-10 ครั้งต่อวัน เพื่อรักษาระดับฮอร์โมนกระตุ้นการสร้างน้ำนมอย่างสม่ำเสมอ และดูแลการเก็บรักษาน้ำนมอย่างถูกสุขลักษณะเพื่อส่งต่อให้เจ้าตัวเล็กใน NICU",
+        ref: "แนวปฏิบัติการจัดการน้ำนมแม่ใน NICU หน้า 15"
+      },
+      {
+        topic: "เหนื่อยล้า เครียด หรือรู้สึกกดดัน",
+        text: "การพักผ่อนเป็นกุญแจสำคัญ แนะนำให้คุณแม่พักสมอง นอนหลับสั้นๆ หรือดื่มน้ำอุ่นเพื่อลดความตึงเครียด การดูแลจิตใจของคุณแม่ส่งผลโดยตรงต่อการหลั่งน้ำนม ทีม NICU พร้อมดูแลและสนับสนุนในทุกก้าว",
+        ref: "แนวทางการส่งเสริมสุขภาพจิตมารดา NICU หน้า 22"
+      },
+      {
+        topic: "พร้อมเรียนรู้หรือขอคำแนะนำเพิ่มเติม",
+        text: "ยินดีให้คำปรึกษาและสาธิตการบีบน้ำนมด้วยมือ การเข้าเต้าที่ถูกต้อง และการเก็บรักษาน้ำนมอย่างถูกวิธี สามารถสอบถามพยาบาลประจำตึกได้ตลอดเวลาเพื่อร่วมมือกันดูแลเจ้าตัวน้อย",
+        ref: "หลักสูตรฝึกอบรมนมแม่สำหรับมารดา NICU หน้า 4"
+      }
+    ];
+
+    const personas = [
+      { id: "baby_fighter", name: "นักสู้ตัวจิ๋ว", emoji: "👶", desc: "เล่าในมุมมองของลูก ให้กำลังใจแม่อย่างอบอุ่น" },
+      { id: "baby_cute", name: "หนูน้อยอ้อนสุดคิ้ว", emoji: "🧸", desc: "น้ำเสียงน่ารัก อ่อนโยน และเป็นกันเอง" },
+      { id: "nicu_team", name: "เราสู้ไปด้วยกัน", emoji: "👩‍⚕️", desc: "ทีม NICU สื่อสารเหมือนเพื่อนที่คอยประคอง" },
+      { id: "relax_mom", name: "ชวนแม่พักผ่อน", emoji: "🌙", desc: "เน้นความเข้าใจ ไม่เพิ่มแรงกดดันให้คุณแม่" },
+      { id: "buddy_dad", name: "Buddy คนสำคัญ", emoji: "👨‍👩‍👦", desc: "ส่งเสริมบทบาทพ่อและครอบครัวในการช่วยเหลือ" }
+    ];
+
+    const storytellingStyles = [
+      { id: "baby_letter", name: "ลูกเขียนจดหมายถึงแม่", emoji: "📝" },
+      { id: "baby_diary", name: "บันทึกประจำวันของลูก", emoji: "📔" },
+      { id: "nicu_friendly", name: "ทีม NICU คุยเป็นกันเอง", emoji: "💬" },
+      { id: "short_sweet", name: "ข้อความสั้นกระชับกินใจ", emoji: "💝" },
+      { id: "today_special", name: "สไตล์เหมาะกับสถานการณ์วันนี้", emoji: "✨" }
+    ];
+
+    // Template database schema to populate clinical guidelines with appropriate creative styling
+    // 6 situations * 5 personas * 5 styles * multiple variations
+    // Rather than hardcoding 150 templates, we build a robust, smart templating function 
+    // that uses core parameters but outputs rich variations dynamically.
+    const messageVariations = {
+      "baby_fighter": {
+        intro: [
+          "สวัสดีค่ะคุณแม่คนเก่งของหนู 💖 หนู {nickname} แวะมารายงานตัวกับแม่จ๋าแล้วน้า",
+          "คุณแม่ขา หนู {nickname} สู้สุดใจอยู่ตรงนี้เพื่อแม่นะคะ 💕",
+          "จดหมายน้อยส่งตรงจากตู้อบของหนู {nickname} ถึงคุณแม่ที่รักที่สุดในโลก ✉️"
+        ],
+        body: {
+          "วันแรกหลังคลอด / เริ่มต้นการบีบหรือปั๊มน้ำนม": "วันนี้หนูน้ำหนัก {weight} และ {status} อยู่ค่ะ ทราบข่าวจากพี่พยาบาลว่าแม่เริ่มกระตุ้นบีบน้ำนมเหลืองอันมีค่าให้หนูแล้ว หนูดีใจและตื่นเต้นที่สุดเลยนะ น้ำนมเหลืองหยดแรกๆ มีค่าเท่ากับทองคำช่วยหนูแข็งแรงเลยค่ะ มาเริ่มก้าวแรกไปด้วยกันนะคะแม่คนเก่ง!",
+          "น้ำนมน้อยหรือกังวลว่าปริมาณน้ำนมไม่เพียงพอ": "วันนี้หนูหนัก {weight} แข็งแรงปลอดภัยดีค่ะ แม่ขา..ไม่ต้องกังวลเรื่องน้ำนมมาน้อยเลยนะ พยาบาลบอกว่าตอนนี้กระเพาะของหนูยังจิ๋วเท่ากำปั้นน้อยๆ เอง ทุกหยดที่แม่ตั้งใจบีบส่งมามีคุณค่ามากที่สุด ไม่ว่าได้เท่าไหร่คือยาวิเศษสุดของหนูแล้วค่ะ ผ่อนคลายนวดเต้านมเบาๆ นะคะหนูรออยู่ค่ะ",
+          "คัดตึงเต้านม": "วันนี้หนูหนัก {weight} กำลังรอน้ำนมของแม่จ๋าอยู่นะคะ ทราบมาว่าแม่คัดเต้าจังเลย พยาบาลแนะนำว่าระบายน้ำนมออกบ่อยๆ และให้ประคบอุ่นเบาๆ ก่อนนะจ๊ะ หรือประคบเย็นหลังจากบีบน้ำนมเสร็จเพื่อคลายบวมน้า อย่าหักโหมบีบรุนแรงนะแม่ หนูกลัวแม่เจ็บจังเลยค่ะ",
+          "น้ำนมมาได้ดีหรือมีปริมาณค่อนข้างสม่ำเสมอ": "เย้! วันนี้หนูหนัก {weight} และ {status} ได้กินอิ่มนอนอุ่นเลยค่ะ น้ำนมแม่ส่งมาอย่างสม่ำเสมอและดีเยี่ยมที่สุดเลยค่ะ พี่พยาบาลชมไม่ขาดปากเลยนะคนเก่ง รักษาวินัยปั๊มทุก 3 ชั่วโมงอย่างผ่อนคลายนะจ๊ะ เจ้าตัวเล็กของแม่แข็งแรงขึ้นในทุกวันเพราะนมแม่เลยค่ะ",
+          "เหนื่อยล้า เครียด หรือรู้สึกกดดัน": "แม่จ๋า..วันนี้พักผ่อนก่อนนะคนดี หนูหนัก {weight} สบายดีและปลอดภัยในตู้อบค่ะ พยาบาลคอยดูแลหนูอย่างดีเลย แม่นอนหลับให้ลึก ดื่มน้ำอุ่นสักแก้ว ผ่อนคลายร่างกายนะคะ จิตใจที่เบิกบานของแม่คือแรงกระตุ้นน้ำนมที่ดีที่สุด หนูรักแม่ที่สุดในโลกเลยนะ",
+          "พร้อมเรียนรู้หรือขอคำแนะนำเพิ่มเติม": "วันนี้หนูมีพลังเพิ่มขึ้น หนัก {weight} แข็งแรงดีค่ะแม่! พรุ่งนี้มาฝึกเรียนรู้การเข้าเต้า บีบน้ำนม หรือการดูดเก็บน้ำนมที่ถูกต้องกันนะคะ พยาบาลใน NICU พร้อมสาธิตและช่วยเหลือแม่เสมอเลย มาร่วมมือกันเลี้ยงหนูให้เติบโตกันน้า"
+        },
+        closing: [
+          "รักคุณแม่ที่สุดในสามโลกเลยค่ะ จากหนู {nickname} คนเก่ง 💖",
+          "หนูจะรอรับความรักผ่านหยดน้ำนมแม่นะคะ สู้ไปด้วยกันนะแม่จ๋า 🍼✨",
+          "กอดๆ คุณแม่ผ่านสายใยนมแม่น้า เลิฟแม่สุดๆ เลยครับ/ค่ะ 🥰"
+        ]
+      },
+      "baby_cute": {
+        intro: [
+          "สวัสดีค่าแม่จ๋าาา 🧸 หนู {nickname} ตื่นมารอคุณแม่ปั๊มนมส่งมาให้แล้วน้า",
+          "อู้ยยย คิดถึงตลับนมคุณแม่ที่สุดเลย วันนี้หนู {nickname} แอบงอแงอ้อนพี่พยาบาลด้วยแหละ 🍼",
+          "ส่งหัวใจดวงน้อยๆ จากเตียง {nickname} ด่วนจี๋ถึงคุณแม่สุดสวยยย ❤️"
+        ],
+        body: {
+          "วันแรกหลังคลอด / เริ่มต้นการบีบหรือปั๊มน้ำนม": "วันนี้หนูหนัก {weight} และ {status} นะคะ พยาบาลบอกว่าแม่เริ่มบีบน้ำนมสีทองคำแล้ว ถึงจะแค่ไม่กี่หยดแต่นั่นคือยาวิเศษที่หนูต้องการที่สุดเลยนะคะ บีบกระตุ้นเบาๆ ทุก 2-3 ชั่วโมงนะแม่จ๋า หนูจะคอยอ้อนส่งกำลังใจผ่านกระจกตู้อบไปให้ค่ะ!",
+          "น้ำนมน้อยหรือกังวลว่าปริมาณน้ำนมไม่เพียงพอ": "วันนี้คุณแม่แอบถอนหายใจเพราะคิดว่านมมาน้อยใช่ไหมน้า ไม่ต้องเครียดเลยนะคุณแม่ กระเพาะหนูจิ๋วเดียวเท่าผลเลมอนเองค่ะ ได้วันละนิดละหน่อยก็ดีต่อใจและป้องกันลำไส้หนูแล้วค่ะ แม่ดื่มน้ำเยอะๆ มองรูปหนูแล้วนวดกระตุ้นเบาๆ นมมาดีขึ้นแน่นอนค่า!",
+          "คัดตึงเต้านม": "อุ๊ย! ได้ข่าวว่าคุณแม่นมตั้งเป้าจนเจ็บคัดเต้าใช่ไหมคะ หนูกำลังใจช่วยนะคุณแม่ พี่พยาบาลแนะให้ประคบอุ่นเบาๆ ก่อนบีบระบายออก จะช่วยเคลียร์ท่อน้ำนมได้ดีเลยค่ะ บีบเสร็จแล้วประคบเย็นต่อจะได้สบายตัวขึ้นน้า สู้ๆ นะคะแม่คนเก่ง!",
+          "น้ำนมมาได้ดีหรือมีปริมาณค่อนข้างสม่ำเสมอ": "ว้าววว! คลังนมหนูที่ตู้อบเพิ่มขึ้นแล้ว ตอนนี้มี {stock_vol} มื้อละ {feed_vol} สบายๆ เลยค่ะ คุณแม่สุดยอดที่สุดเลย! พี่พยาบาลแอบชมว่าแม่ขยันปั๊มนมมาก รักษาวินัยต่อไปนะจ๊ะหนูจะได้อ้วนถ้วนสมบูรณ์ไวๆ นมแม่จ๋าอร่อยและดีที่สุดเลย!",
+          "เหนื่อยล้า เครียด หรือรู้สึกกดดัน": "แม่จ๋าา หนูรู้ว่าแม่เหนื่อยมากๆ เลย ทั้งเดินทาง ทั้งพักผ่อนไม่เต็มที่ พักสมองก่อนน้า หลับตาสักนิดดด ดื่มน้ำส้มหรือน้ำอุ่นที่แม่ชอบ พี่พยาบาลดูแลหนู {nickname} เป็นอย่างดีเลยค่ะ สุขภาพแม่ต้องมาก่อน สบายใจแล้วน้ำนมก็ไหลรินเองน้า",
+          "พร้อมเรียนรู้หรือขอคำแนะนำเพิ่มเติม": "หนูตัวจิ๋วหนัก {weight} อยากหัดเรียนรู้การทานนมแม่แบบโปรแล้วค่ะ! คุณแม่พร้อมลุยมาหาความรู้เพิ่มเติมกับพี่พยาบาลประจำตึกได้เลยนะคะ เขาสอนตั้งแต่การก้มอุ้ม การเก็บสต็อก และจัดท่าทางที่แม่ไม่เมื่อยเลยนะ มาฝึกปั่นออเดอร์นมไปด้วยกันนะแม่!"
+        },
+        closing: [
+          "จุ๊บๆ แก้มคุณแม่คนเก่งของหนู รอนมแม่สุดอร่อยนะคะ 🧸💕",
+          "ส่งหัวใจดวงโตๆ ให้แม่น้า รักแม่ที่สุดเล้ยยยย 🥰",
+          "สู้สุดใจไปกับเจ้าตลับน้อย {nickname} นะคะแม่ขา"
+        ]
+      },
+      "nicu_team": {
+        intro: [
+          "เรียนคุณแม่น้อง {nickname} ทางทีมพยาบาล NICU 1 ขอนำส่งรายงานความคืบหน้าของเจ้าตัวเล็กค่ะ",
+          "สวัสดีค่ะคุณแม่น้อง {nickname} วันนี้ทีมพยาบาลและทีมคลินิก NICU มีความตั้งใจดีๆ มาฝากคุณแม่ค่ะ 🏥",
+          "ส่งรักและความห่วงใยจากทีมพยาบาล NICU 1 ถึงคุณแม่น้อง {nickname} คนเก่งค่ะ"
+        ],
+        body: {
+          "วันแรกหลังคลอด / เริ่มต้นการบีบหรือปั๊มน้ำนม": "วันนี้แรงใจดีมากค่ะ น้องน้ำหนัก {weight} และ {status} อยู่ สำหรับเรื่องนมแม่ วันแรกหลังคลอดนี้เน้นย้ำเรื่องความสำคัญของการบีบกระตุ้นด้วยมือเป็นหลักเพื่อเก็บน้ำนมเหลือง ซึ่งอุดมด้วยภูมิต้านทานชั้นเลิศที่ช่วยโอบอุ้มทางเดินอาหารของน้อง แนะนำบีบสม่ำเสมอทุก 2-3 ชั่วโมงนะคะ ทีมงานยินดีช่วยเหลือค่ะ",
+          "น้ำนมน้อยหรือกังวลว่าปริมาณน้ำนมไม่เพียงพอ": "ตอนนี้น้อง {nickname} น้ำหนัก {weight} อาการคงที่ค่ะ คุณแม่ไม่ต้องกังวลเรื่องปริมาณน้ำนมน้อยในช่วงแรกเลยนะคะ เพราะกระเพาะของน้องแรกเกิดยังมีขนาดเล็กมากในวันแรกๆ การลดความตึงเครียด นวดสัมผัสเต้าเบาๆ และการทำจิตใจให้สบายข้างเตียงน้องจะกระตุ้นอ็อกซิโทซินให้ไหลดีขึ้นค่ะ",
+          "คัดตึงเต้านม": "วันนี้เจ้าตัวเล็กน้ำหนัก {weight} สบายดีค่ะ หากคุณแม่มีอาการเต้าคัดตึง แนะนำให้นวดระบายน้ำนมออกเป็นระยะนะคะ ประคบอุ่นตื้นๆ ก่อนเพื่อเปิดท่อน้ำนมให้ไหลง่าย แล้วบีบด้วยมืออย่างนุ่มนวล หลีกเลี่ยงการเค้นรุนแรงเพื่อป้องกันการบอบช้ำ แล้วประคบเย็นเพื่อลดความทรมานค่ะ",
+          "น้ำนมมาได้ดีหรือมีปริมาณค่อนข้างสม่ำเสมอ": "คุณแม่ทำหน้าที่ได้ดีเยี่ยมสมบูรณ์แบบมากค่ะ ตอนนี้ปริมาณน้ำนมมาดี สต็อกเหลือในคลัง NICU {stock_vol} ให้น้องมื้อละ {feed_vol} ได้อย่างลงตัว แนะนำให้รักษาระเบียบการปั๊มนมสม่ำเสมอ 8-10 ครั้งต่อวันและดูแลความสะอาดของอุปกรณ์เพื่อสุขอนามัยที่ดีของน้องนะคะ",
+          "เหนื่อยล้า เครียด หรือรู้สึกกดดัน": "ทีมพยาบาลเข้าใจถึงความกังวลและความเหนื่อยล้าหลังคลอดของคุณแม่เป็นอย่างดีค่ะ อยากให้คุณแม่หาเวลาพักสมองและนอนหลับพักผ่อนให้เพียงพอ หลีกเลี่ยงแรงกดดันเรื่องปริมาณ เพราะความผ่อนคลายส่งผลต่อการสร้างน้ำนมโดยตรงค่ะ เจ้าตัวเล็กปลอดภัยดีพยาบาลดูแลอย่างใกล้ชิดค่ะ",
+          "พร้อมเรียนรู้หรือขอคำแนะนำเพิ่มเติม": "ตอนนี้น้อง {nickname} {status} พร้อมเรียนรู้การเลี้ยงด้วยนมแม่เพิ่มขึ้นแล้วค่ะ หากคุณแม่สะดวกสามารถขอคำปรึกษาและสาธิตวิธีการบีบน้ำนม เก็บน้ำนม หรือท่าทางการให้นมบุตรที่ถูกต้องจากทีมพยาบาล NICU 1 ได้ตลอดเวลาเลยนะคะ ทีมงานพร้อมช่วยเหลือคุณแม่เต็มที่ค่ะ"
+        },
+        closing: [
+          "ทีมพยาบาล NICU 1 พร้อมเคียงข้างและประคับประคองครอบครัวของน้องเสมอนะคะ 🏥🌸",
+          "หากมีคำถามหรือต้องการคำแนะนำเพิ่มเติม สามารถสอบถามพวกเราได้ตลอดเวลาค่ะ",
+          "เชื่อมั่นในพลังความเป็นแม่ น้องสู้สุดใจ พยาบาลสู้ร่วมไปกับคุณแม่ค่ะ"
+        ]
+      },
+      "relax_mom": {
+        intro: [
+          "สวัสดีค่ะคุณแม่น้อง {nickname} วันนี้อยากชวนคุณแม่หลับตาสูดหายใจลึกๆ และฟังความห่วงใยจากน้องค่ะ",
+          "กอดอุ่นๆ ส่งตรงถึงคุณแม่น้อง {nickname} ในวันที่พยายามอย่างเต็มที่แล้วนะคะ 💕",
+          "ส่งข้อความผ่อนคลายและความรักจากตู้อบของน้อง {nickname} ถึงคุณแม่คนสวยค่ะ"
+        ],
+        body: {
+          "วันแรกหลังคลอด / เริ่มต้นการบีบหรือปั๊มน้ำนม": "วันนี้น้องหนัก {weight} อาการทรงตัวพยาบาลดูแลดีค่ะ คุณแม่ไม่ต้องรีบร้อนหรือกังวลนะคะ เริ่มต้นบีบน้ำนมด้วยมืออย่างแผ่วเบาเพื่อเก็บคอลอสตรัมสีเหลืองทองหยดเล็กๆ ที่เป็นสิ่งล้ำค่า น้องยังทานทีละน้อยมาก สบายใจและเริ่มทีละก้าวอย่างผ่อนคลายด้วยกันค่ะ",
+          "น้ำนมน้อยหรือกังวลว่าปริมาณน้ำนมไม่เพียงพอ": "ความพยายามของแม่ยอดเยี่ยมที่สุดแล้วค่ะ อย่ามองที่ขีดขวดนมเป็นหลักเลยนะ เพราะขนาดกระเพาะน้องแรกเกิดจิ๋วเดียวเองค่ะ แค่น้ำนมไม่กี่หยดก็มีคุณค่าปกป้องน้องได้มหาศาล ผ่อนคลายกล้ามเนื้อ ดื่มน้ำอุ่น และพักผ่อนเยอะๆ ความสบายใจจะช่วยชวนให้น้ำนมหลั่งไหลตามธรรมชาติค่ะ",
+          "คัดตึงเต้านม": "คุณแม่ขา แขวนความเจ็บและล้าลงก่อนนะคะ หากรู้สึกคัดตึงเต้า ให้ประคบอุ่นเบาๆ เพื่อผ่อนคลายเนื้อเยื่อและคลายท่อนมให้พอนมไหลสะดวก บีบออกเบาๆ ไม่ต้องเค้นแรงจนเจ็บช้ำนะคะ บีบเสร็จแล้วชโลมประคบเย็นเพื่อผ่อนคลายความล้าค่ะ ค่อยๆ ทำอย่างอ่อนโยนนะคะ",
+          "น้ำนมมาได้ดีหรือมีปริมาณค่อนข้างสม่ำเสมอ": "ยินดีด้วยกับผลลัพธ์ความสม่ำเสมอค่ะ ตอนนี้สต็อกนมแม่ในคลังพอเพียงดีมากสำหรับน้องที่ทานมื้อละ {feed_vol} คุณแม่รักษาจังหวะปั๊มได้อย่างสบายๆ ไม่เคร่งครัดจนอึดอัดนะจ๊ะ พยายามปั๊มแบบสบายอารมณ์ คลอเพลงเบาๆ ไปด้วยเพื่อความสุขของคุณแม่ค่ะ",
+          "เหนื่อยล้า เครียด หรือรู้สึกกดดัน": "วันนี้ทีม NICU อยากขอร้องให้คุณแม่ ‘พักผ่อน’ เป็นภารกิจหลักค่ะ พักสายตา นอนหลับเอนหลังเต็มที่ น้องได้รับการเฝ้าดูแลอย่างเข้มงวดและปลอดภัยดี คุณแม่เหนื่อยมามากแล้ว หากใจเราพร้อม กายเราผ่อนคลาย น้ำนมที่เปี่ยมด้วยความรักก็จะหลั่งไหลได้ดีขึ้นแน่นอนค่ะ",
+          "พร้อมเรียนรู้หรือขอคำแนะนำเพิ่มเติม": "น้อง {nickname} {status} สบายดีค่ะ คุณแม่ไม่ต้องเร่งรัดตัวเองน้า ค่อยๆ เรียนรู้เรื่องการเก็บน้ำนมและการกระตุ้นอย่างเป็นธรรมชาติร่วมกันกับพี่พยาบาล NICU 1 เมื่อคุณแม่รู้สึกพร้อมนะคะ พวกเราสแตนบายรอคุณแม่เสมอโดยไร้แรงกดดันค่ะ"
+        },
+        closing: [
+          "ผ่อนคลายร่างกาย นอนหลับพักผ่อนให้สบายน้า คุณแม่ทำดีที่สุดแล้วค่ะ 🌙✨",
+          "เพราะสุขภาพใจและกายของคุณแม่ คือขุมพลังสำคัญที่สุดของลูกน้อย รักแม่นะคะ",
+          "สวมกอดจากทางไกล พักสายตาสักครู่แล้วเริ่มกันใหม่ด้วยรอยยิ้มค่ะ"
+        ]
+      },
+      "buddy_dad": {
+        intro: [
+          "ส่งข่าวสารถึงคุณพ่อและคุณแม่น้อง {nickname} ยอดทีมเวิร์กของเจ้าตัวเล็กค่ะ 👨‍👩‍👦",
+          "สวัสดีครับ/ค่ะ คุณพ่อและคุณแม่คนสำคัญของ {nickname} วันนี้มีข้อมูลนมแม่มาแนะนำทีมสนับสนุนครับ",
+          "คุณพ่อสุดเท่และคุณแม่สุดแกร่งของ {nickname} ขอนำส่งกำลังใจจากศูนย์พยาบาล NICU 1 ครับ"
+        ],
+        body: {
+          "วันแรกหลังคลอด / เริ่มต้นการบีบหรือปั๊มน้ำนม": "น้องน้ำหนัก {weight} และมีอาการ {status} ครับ สำหรับวันแรกหลังคลอดนี้ คุณพ่อมีบทบาทสำคัญมากในการช่วยประคองและนวดหลังไหล่ให้คุณแม่ผ่อนคลายเพื่อกระตุ้นหัวน้ำนมเหลือง (Colostrum) การบีบกระตุ้นเบาๆ ทุก 2-3 ชั่วโมงนี้จะเก็บภูมิต้านทานล้ำค่าไปป้องกันลำไส้ของเจ้าตัวน้อยในตู้อบครับ",
+          "น้ำนมน้อยหรือกังวลว่าปริมาณน้ำนมไม่เพียงพอ": "ช่วงเริ่มต้นปริมาณน้ำนมคุณแม่อาจจะดูน้อย แต่อย่าได้กังวลใจไปเลยครับ คุณพ่อสามารถช่วยเป็นกำลังใจเคียงข้าง ชงน้ำอุ่น นวดผ่อนคลายเต้า และช่วยเตรียมอุปกรณ์ปั๊มนม ความรักและการสนับสนุนจากครอบครัวเป็นยาวิเศษที่กระตุ้นการหลั่งฮอร์โมนนมแม่ได้เร็วที่สุดครับ น้องตัวจิ๋วเอาใจช่วยอยู่!",
+          "คัดตึงเต้านม": "คุณแม่อาจมีอาการเต้าคัดตึงเจ็บปวด คุณพ่อช่วยเตรียมประคบอุ่นเบาๆ ก่อนบีบระบายเพื่อช่วยคลายท่อน้ำนมได้ดีมากครับ และคอยช่วยประคบเย็นหลังบีบเพื่อลดความระบมและอักเสบ ร่วมด้วยช่วยกันบีบอย่างนุ่มนวล หลีกเลี่ยงแรงเค้นบีบที่รุนแรงเพื่อความปลอดภัยเต้านมคุณแม่ครับ",
+          "น้ำนมมาได้ดีหรือมีปริมาณค่อนข้างสม่ำเสมอ": "ยอดเยี่ยมมากครับทีมเวิร์กครอบครัวคุณพ่อคุณแม่! ปริมาณน้ำนมสม่ำเสมอดีมาก มีนมคลังไว้ให้น้อง {stock_vol} ให้น้องมื้อละ {feed_vol} ได้สบาย คุณพ่อช่วยล้างและอบฆ่าเชื้ออุปกรณ์ปั๊มนม คอยจัดเก็บถุงนมลงสต็อก เพื่อแบ่งเบาภาระและรักษามาตรฐานความสะอาดของน้ำนมให้เจ้าตัวน้อยกันนะครับ",
+          "เหนื่อยล้า เครียด หรือรู้สึกกดดัน": "พยาบาล NICU สังเกตเห็นความเหน็ดเหนื่อยของคุณแม่ช่วงนี้ครับ คุณพ่อช่วยประคองรับหน้าที่คุย ประสานงาน และสลับให้คุณแม่ได้นอนหลับพักยาวๆ โดยตัดเรื่องเครียดออกไปเลยนะครับ ความอุ่นใจที่มีคู่ชีวิตคอยดูแลจะช่วยฟื้นฟูสุขภาพคุณแม่และทำให้น้ำนมไหลคล่องขึ้นอย่างมากครับ สู้ไปด้วยกันนะยอดทีม!",
+          "พร้อมเรียนรู้หรือขอคำแนะนำเพิ่มเติม": "เจ้ายอดรัก {nickname} กำลังเติบโตขึ้นทุกวันด้วยน้ำนมแม่ คุณพ่อและคุณแม่สามารถจูงมือกันมารับการสาธิตวิธีการจัดท่าทางปั๊ม เก็บสต็อกน้ำนม และเทคนิคกระตุ้นจากทีมพยาบาล NICU 1 ได้เลยนะครับ การเรียนรู้ของครอบครัวจะช่วยให้การสนับสนุนแม่เป็นเรื่องสนุกและเปี่ยมสุขครับ"
+        },
+        closing: [
+          "ครอบครัวสามัคคี เจ้าตัวน้อยเติบโตแข็งแรงไวแน่นอนครับ สู้ๆ ยอดทีมเวิร์ก! 👨‍👩‍👦✨",
+          "พยาบาล NICU ยินดีสนับสนุนคุณพ่อและคุณแม่ในทุกก้าวนมแม่นะครับ",
+          "เพราะครอบครัวคือหัวใจสำคัญของการฟื้นตัวของน้อง มีคำถามคุยกับทีมได้ตลอดเวลาครับ"
+        ]
+      }
+    };
+
+    // State variables
+    let currentPersona = "baby_fighter";
+    let currentStyle = "baby_letter";
+    let currentSituationIndex = 1; // "น้ำนมน้อย..." by default
+    let currentVariationIndex = 0;
+
+    const situations = [
+      "วันแรกหลังคลอด / เริ่มต้นการบีบหรือปั๊มน้ำนม",
+      "น้ำนมน้อยหรือกังวลว่าปริมาณน้ำนมไม่เพียงพอ",
+      "คัดตึงเต้านม",
+      "น้ำนมมาได้ดีหรือมีปริมาณค่อนข้างสม่ำเสมอ",
+      "เหนื่อยล้า เครียด หรือรู้สึกกดดัน",
+      "พร้อมเรียนรู้หรือขอคำแนะนำเพิ่มเติม"
+    ];
+
+    // Initialize UI
+    function initUI() {
+      // Build Mother's situations list
+      const sitContainer = document.getElementById('situations-container');
+      sitContainer.innerHTML = '';
+      situations.forEach((sit, index) => {
+        const div = document.createElement('div');
+        div.className = `situation-card ${index === currentSituationIndex ? 'active' : ''}`;
+        div.dataset.index = index;
+        div.innerHTML = `
+          <span>${sit}</span>
+          <span class="icon">${index === currentSituationIndex ? '✓' : ''}</span>
+        `;
+        div.addEventListener('click', () => {
+          selectSituation(index);
+        });
+        sitContainer.appendChild(div);
+      });
+
+      // Build Persona Selector Grid
+      const personaGrid = document.getElementById('personas-grid');
+      personaGrid.innerHTML = '';
+      personas.forEach(p => {
+        const card = document.createElement('div');
+        card.className = `card-choice ${p.id === currentPersona ? 'active' : ''}`;
+        card.dataset.id = p.id;
+        card.innerHTML = `
+          <div class="icon">${p.emoji}</div>
+          <div class="title">${p.name}</div>
+          <div class="desc">${p.desc}</div>
+        `;
+        card.addEventListener('click', () => {
+          selectPersona(p.id);
+        });
+        personaGrid.appendChild(card);
+      });
+
+      // Build Storytelling Styles Grid
+      const styleGrid = document.getElementById('styles-grid');
+      styleGrid.innerHTML = '';
+      storytellingStyles.forEach(s => {
+        const card = document.createElement('div');
+        card.className = `card-choice ${s.id === currentStyle ? 'active' : ''}`;
+        card.dataset.id = s.id;
+        card.innerHTML = `
+          <div class="icon">${s.emoji}</div>
+          <div class="title">${s.name}</div>
+        `;
+        card.addEventListener('click', () => {
+          selectStyle(s.id);
+        });
+        styleGrid.appendChild(card);
+      });
+
+      // Set input event listeners for live summary preview binding
+      const bindInput = (id, targetId) => {
+        const el = document.getElementById(id);
+        const target = document.getElementById(targetId);
+        el.addEventListener('input', () => {
+          target.innerText = el.value || '-';
+          // Regenerate draft message with updated facts live
+          generateDraft(false);
+        });
+      };
+
+      bindInput('baby_nickname', 'summary-name');
+      bindInput('baby_weight', 'summary-weight');
+      bindInput('baby_status', 'summary-status');
+      bindInput('milk_feed', 'summary-feed');
+      bindInput('milk_stock', 'summary-stock');
+
+      // Sync character counter
+      const msgArea = document.getElementById('generated-message');
+      msgArea.addEventListener('input', () => {
+        document.getElementById('char-counter').innerText = `${msgArea.value.length} ตัวอักษร`;
+      });
+
+      // Setup guides trigger
+      const guideTrigger = document.getElementById('guide-trigger');
+      const guideContent = document.getElementById('guide-content');
+      guideTrigger.addEventListener('click', () => {
+        if (guideContent.style.display === 'none') {
+          guideContent.style.display = 'block';
+          guideTrigger.querySelector('span:last-child').innerText = '▲';
+        } else {
+          guideContent.style.display = 'none';
+          guideTrigger.querySelector('span:last-child').innerText = '▼';
+        }
+      });
+
+      // Actions
+      document.getElementById('btn-generate-new').addEventListener('click', () => {
+        currentVariationIndex = (currentVariationIndex + 1) % 3;
+        generateDraft(true);
+        showToast("🌸 รังสรรค์ข้อความสไตล์คำอธิบายรูปแบบใหม่เรียบร้อย!");
+      });
+
+      document.getElementById('btn-generate-another').addEventListener('click', () => {
+        // Change storytelling style sequentially
+        const currentIndex = storytellingStyles.findIndex(s => s.id === currentStyle);
+        const nextIndex = (currentIndex + 1) % storytellingStyles.length;
+        selectStyle(storytellingStyles[nextIndex].id);
+        showToast("📝 เปลี่ยนรูปแบบการสื่อสารใหม่เรียบร้อย!");
+      });
+
+      document.getElementById('btn-auto-recommend').addEventListener('click', () => {
+        autoRecommend();
+      });
+
+      document.getElementById('btn-clear-fields').addEventListener('click', () => {
+        clearAllInputs();
+      });
+
+      document.getElementById('btn-copy').addEventListener('click', () => {
+        copyToClipboard();
+      });
+
+      document.getElementById('btn-share-line').addEventListener('click', () => {
+        openLineModal();
+      });
+
+      // Modal triggers
+      document.getElementById('close-modal').addEventListener('click', closeLineModal);
+      document.getElementById('btn-modal-close').addEventListener('click', closeLineModal);
+
+      // Run initial draft generation
+      selectSituation(currentSituationIndex, false);
+    }
+
+    function selectSituation(index, triggerDraft = true) {
+      currentSituationIndex = index;
+      
+      // Update active state in UI
+      const cards = document.querySelectorAll('.situation-card');
+      cards.forEach((card, i) => {
+        if (i === index) {
+          card.classList.add('active');
+          card.querySelector('.icon').innerText = '✓';
+        } else {
+          card.classList.remove('active');
+          card.querySelector('.icon').innerText = '';
+        }
+      });
+
+      // Update clinical guideline display (RAG simulation from docx facts)
+      const guide = clinicalGuidelines[index] || { text: "ไม่พบข้อมูลอ้างอิง", ref: "อ้างอิง: -" };
+      document.getElementById('clinical-text').innerText = guide.text;
+      document.getElementById('clinical-ref').innerText = `อ้างอิง: ${guide.ref}`;
+      document.getElementById('message-ref').innerText = `📚 ${guide.ref}`;
+
+      if (triggerDraft) {
+        currentVariationIndex = 0;
+        generateDraft(true);
+      }
+    }
+
+    function selectPersona(id) {
+      currentPersona = id;
+      document.querySelectorAll('#personas-grid .card-choice').forEach(card => {
+        card.classList.toggle('active', card.dataset.id === id);
+      });
+      
+      // Update badge in phone mockup preview
+      const p = personas.find(item => item.id === id);
+      document.getElementById('preview-persona-badge').innerText = `${p.emoji} ${p.name}`;
+
+      currentVariationIndex = 0;
+      generateDraft(true);
+    }
+
+    function selectStyle(id) {
+      currentStyle = id;
+      document.querySelectorAll('#styles-grid .card-choice').forEach(card => {
+        card.classList.toggle('active', card.dataset.id === id);
+      });
+
+      // Update badge in phone mockup preview
+      const s = storytellingStyles.find(item => item.id === id);
+      document.getElementById('preview-style-badge').innerText = `${s.emoji} ${s.name}`;
+
+      currentVariationIndex = 0;
+      generateDraft(true);
+    }
+
+    // Auto recommendation algorithm based on mother's selected situation (Section 7 rule)
+    function autoRecommend() {
+      // Logic mapping situation to best Persona + Style
+      // 0: วันแรกหลังคลอด -> baby_fighter + today_special
+      // 1: น้ำนมน้อย -> buddy_dad + baby_letter
+      // 2: คัดตึงเต้านม -> nicu_team + today_special
+      // 3: น้ำนมมาดี -> baby_cute + baby_diary
+      // 4: เหนื่อยล้า เครียด -> relax_mom + short_sweet
+      // 5: พร้อมเรียนรู้ -> nicu_team + nicu_friendly
+
+      let recommendedPersona = "baby_fighter";
+      let recommendedStyle = "today_special";
+
+      switch (currentSituationIndex) {
+        case 0:
+          recommendedPersona = "baby_fighter";
+          recommendedStyle = "baby_letter";
+          break;
+        case 1:
+          recommendedPersona = "buddy_dad";
+          recommendedStyle = "baby_letter";
+          break;
+        case 2:
+          recommendedPersona = "nicu_team";
+          recommendedStyle = "today_special";
+          break;
+        case 3:
+          recommendedPersona = "baby_cute";
+          recommendedStyle = "baby_diary";
+          break;
+        case 4:
+          recommendedPersona = "relax_mom";
+          recommendedStyle = "short_sweet";
+          break;
+        case 5:
+          recommendedPersona = "nicu_team";
+          recommendedStyle = "nicu_friendly";
+          break;
+      }
+
+      selectPersona(recommendedPersona);
+      selectStyle(recommendedStyle);
+      
+      showToast("✨ ระบบวิเคราะห์สถานการณ์คุณแม่ และจัดสรรบุคลิก + รูปแบบที่เหมาะสมที่สุดให้แล้วค่ะ!");
+    }
+
+    // Draft generation engine containing clinical guidelines integration
+    function generateDraft(animate = true) {
+      const babyName = document.getElementById('baby_nickname').value || "น้องมะลิ";
+      const babyWeight = document.getElementById('baby_weight').value || "1,200 กรัม";
+      const babyStatus = document.getElementById('baby_status').value || "อาการคงที่ อยู่ในตู้อบ";
+      const feedVol = document.getElementById('milk_feed').value || "10 ซีซี";
+      const stockVol = document.getElementById('milk_stock').value || "5 ขวด";
+      const nurseNotes = document.getElementById('nurse_notes').value.trim();
+
+      const sitText = situations[currentSituationIndex];
+      const personaObj = messageVariations[currentPersona] || messageVariations["baby_fighter"];
+      
+      // Get core templates
+      const intros = personaObj.intro;
+      const coreBodyTemplate = personaObj.body[sitText] || "สู้ๆ นะคะคุณแม่";
+      const closings = personaObj.closing;
+
+      // Select specific intro/closing variations based on currentVariationIndex
+      const introText = intros[currentVariationIndex % intros.length];
+      const closingText = closings[(currentVariationIndex + 1) % closings.length];
+
+      // Blend together matching styling formatting
+      let formattedBody = coreBodyTemplate
+        .replace(/{nickname}/g, babyName)
+        .replace(/{weight}/g, babyWeight)
+        .replace(/{status}/g, babyStatus)
+        .replace(/{feed_vol}/g, feedVol)
+        .replace(/{stock_vol}/g, stockVol);
+
+      // Add storytelling style flavor overrides
+      let finalMsg = "";
+      const sType = currentStyle;
+
+      if (sType === "baby_letter") {
+        finalMsg = `✉️ ถึง คุณแม่สุดที่รักของหนู 💕\n\n${introText}\n\n${formattedBody}\n\n${closingText}`;
+      } else if (sType === "baby_diary") {
+        finalMsg = `📖 บันทึกความทรงจำก้าวเล็กๆ ของ {nickname}\n🗓️ สถานะวันนี้: {status}\n\n${formattedBody}\n\n---\n🧸 บันทึกจากใจตู้อบของหนู แฮปปี้ในทุกหยดนมแม่ค่ะ`
+          .replace(/{status}/g, babyStatus)
+          .replace(/{nickname}/g, babyName);
+      } else if (sType === "nicu_friendly") {
+        finalMsg = `🌸 ด้วยรักและปรารถนาดีจากทีมพยาบาล NICU 1\n\nเรียนคุณแม่ของน้อง {nickname} นะคะ..\n\n${formattedBody}\n\nพยาบาลขอเป็นกำลังใจให้คุณแม่และครอบครัวเสมอนะคะ หากขาดเหลือสิ่งใดโปรดเรียกพยาบาลได้ทุกเวลาค่ะ 🥰`
+          .replace(/{nickname}/g, babyName);
+      } else if (sType === "short_sweet") {
+        // Strip out some excess text for short style
+        const condensedBody = formattedBody.split('。')[0] || formattedBody; 
+        finalMsg = `💕 สู้ๆ นะคะคุณแม่น้อง {nickname}!\n\n${condensedBody}\n\nทุกหยดน้ำนมคือยาวิเศษสุดของหนูค่ะ ทีม NICU ยืนเคียงข้างแม่เสมอนะคะ ✨`
+          .replace(/{nickname}/g, babyName);
+      } else {
+        // Today's special
+        finalMsg = `${introText}\n\n${formattedBody}\n\n${closingText}`;
+      }
+
+      // Append Nurse Notes if any
+      if (nurseNotes) {
+        finalMsg += `\n\n✏️ บันทึกเพิ่มเติมจากพี่พยาบาล: "${nurseNotes}"`;
+      }
+
+      // Display to user
+      const msgArea = document.getElementById('generated-message');
+      msgArea.value = finalMsg;
+      
+      // Character count trigger
+      document.getElementById('char-counter').innerText = `${finalMsg.length} ตัวอักษร`;
+
+      if (animate) {
+        msgArea.style.backgroundColor = '#FFF0F5';
+        setTimeout(() => {
+          msgArea.style.backgroundColor = '#FFFAFC';
+        }, 300);
+      }
+    }
+
+    // Helper functions
+    function clearAllInputs() {
+      document.getElementById('baby_nickname').value = 'น้องมะลิ';
+      document.getElementById('baby_weight').value = '1,200 กรัม';
+      document.getElementById('baby_status').value = 'อาการคงที่ อยู่ในตู้อบ';
+      document.getElementById('milk_feed').value = '10 ซีซี';
+      document.getElementById('milk_stock').value = '5 ขวด';
+      document.getElementById('nurse_notes').value = '';
+      
+      // Reset targets
+      document.getElementById('summary-name').innerText = 'น้องมะลิ';
+      document.getElementById('summary-weight').innerText = '1,200 กรัม';
+      document.getElementById('summary-status').innerText = 'อาการคงที่ อยู่ในตู้อบ';
+      document.getElementById('summary-feed').innerText = '10 ซีซี';
+      document.getElementById('summary-stock').innerText = '5 ขวด';
+
+      selectSituation(1, true);
+      showToast("🧹 ล้างค่าและเติมข้อมูลสมมติเริ่มต้นเรียบร้อย!");
+    }
+
+    function copyToClipboard() {
+      const text = document.getElementById('generated-message').value;
+      if (!text) return;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        showToast("📁 คัดลอกข้อความลงคลิปบอร์ดแล้ว! สามารถวางลงใน LINE ได้ทันทีค่ะ");
+      }).catch(err => {
+        // Fallback for sandboxed frames if clipboard API is blocked
+        const tempTextArea = document.createElement("textarea");
+        tempTextArea.value = text;
+        document.body.appendChild(tempTextArea);
+        tempTextArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempTextArea);
+        showToast("📁 คัดลอกข้อความแล้ว (ผ่านช่องทางสำรอง)!");
+      });
+    }
+
+    function openLineModal() {
+      const text = document.getElementById('generated-message').value;
+      document.getElementById('line-chat-text').innerText = text;
+      document.getElementById('line-modal-overlay').classList.add('show');
+    }
+
+    function closeLineModal() {
+      document.getElementById('line-modal-overlay').classList.remove('show');
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast-notif');
+      document.getElementById('toast-message').innerText = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3500);
+    }
+
+    // On Load setup
+    window.addEventListener('DOMContentLoaded', () => {
+      initUI();
+    });
+  </script>
+</body>
+</html>
